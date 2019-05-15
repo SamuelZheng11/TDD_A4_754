@@ -1,15 +1,17 @@
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.List;
+
 import static org.junit.Assert.assertTrue;
 
 public class GithubUnitTest {
 
     private User _developer;
-    private GithubModule _github;
+    private GithubApi _github;
 
     @Before public void initialize(){
-        _github = GithubModule.getInstance();
+        _github = new MockGithubModule();
         _developer = new User("", UserType.Developer);
         _github.signIn("username", "password");
     }
@@ -20,18 +22,17 @@ public class GithubUnitTest {
     public void AddCommentsAndCodeRequestsToGithubAutomaticallyTest() {
         //Given
         String branchName = "GithubPullRequestFetchTest_Branch";
+        String targetBranchName = "GithubPullRequestFetchTest_TargetBranch";
         GitCommit[] committed_code = {new GitCommit("Commit Message", "GithubPullRequestFetchTest_Commit")};
-        GitBranch branch = new GitBranch(branchName, committed_code);
-        PullRequest pullrequest = _github.createPullRequest(branch);
+        GitBranch sourceBranch = new GitBranch(branchName, committed_code);
+        GitBranch targetBranch = new GitBranch(branchName, committed_code);
+        PullRequest pullrequest = _github.createPullRequest("Test adding comments automatically pull request", sourceBranch, targetBranch);
         User commenter = new User("", UserType.NonDeveloper);
         //When
         GitComment comment = new GitComment("This code is great");
         pullrequest.postDiscussion(commenter, comment);
-        GitCodeRequest request = new GitCodeRequest("Please make line 34 better");
-        pullrequest.postDiscussion(commenter, request);
         //Assert
-        List<GitDiscussion> discussion = _github.getPullRequestDiscussion(branchName);
+        List<GitComment> discussion = _github.getPullRequestComments(branchName);
         assertTrue(discussion.contains(comment));
-        assertTrue(discussion.contains(request));
-    }
+}
 }
