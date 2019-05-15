@@ -1,10 +1,14 @@
 public class PullRequest {
 
-    public boolean isCompleted(){
+    public PullRequest(User user, String title, GitBranch source, GitBranch target){
 
     }
 
-    public void postDiscussion(User submitter, GitDiscussion discussion){
+    public boolean isCompleted(){
+        return true;
+    }
+
+    public void postComment(GitComment discussion){
 
     }
 }

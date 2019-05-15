@@ -14,6 +14,6 @@ public interface GithubApi {
 
     public void approvePullRequest(String branchName);
 
-    public List<GitComment> getPullRequestComments(String branchName);
+    public List<GitComment> getPullRequestComments(PullRequest pullrequest);
 
 }
