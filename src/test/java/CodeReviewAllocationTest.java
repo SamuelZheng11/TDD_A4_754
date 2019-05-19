@@ -4,6 +4,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class CodeReviewAllocationTest {
@@ -40,5 +41,18 @@ public class CodeReviewAllocationTest {
         //Assert
         List<User> codeReviewers = _github.getCodeReviewers(pullRequest);
         assertTrue(codeReviewers.contains(nonDeveloper));
+    }
+
+    @Test
+    public void TestDeveloperCanRemoveCodeReviewer() {
+        //Given
+        PullRequest pullRequest = _github.createPullRequest("Test add code reviewers", sourceBranch, targetBranch);
+        //When
+        CodeReview codeReview = new CodeReview(pullRequest, developer, nonDeveloper);
+        //Assert
+        List<User> codeReviewers = _github.getCodeReviewers(pullRequest);
+        assertTrue(codeReviewers.contains(nonDeveloper));
+        pullRequest.removeCodeReviwer(developer, nonDeveloper);
+        assertFalse(codeReviewers.contains(nonDeveloper));
     }
 }
