@@ -49,9 +49,9 @@ public class CodeReviewAllocationTest {
         PullRequest pullRequest = _github.createPullRequest("Test add code reviewers", sourceBranch, targetBranch);
         //When
         CodeReview codeReview = new CodeReview(pullRequest, developer, nonDeveloper);
-        //Assert
         List<User> codeReviewers = _github.getCodeReviewers(pullRequest);
         assertTrue(codeReviewers.contains(nonDeveloper));
+        //Assert
         pullRequest.removeCodeReviwer(developer, nonDeveloper);
         codeReviewers = _github.getCodeReviewers(pullRequest);
         assertFalse(codeReviewers.contains(nonDeveloper));
