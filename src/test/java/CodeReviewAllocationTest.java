@@ -97,7 +97,7 @@ public class CodeReviewAllocationTest {
         pullRequest.randomAllocateReviewer();
 
         //Assert
-        List<User> users = _github.getCodeReviwers(pullRequest);
+        List<User> users = _github.getCodeReviewers(pullRequest);
         User codeReviewer = users.get(0);
         int initialReviewCount = userReviewCountMap.get(codeReviewer);
         assertEquals(codeReviewer.getReviewCount(), initialReviewCount+1);

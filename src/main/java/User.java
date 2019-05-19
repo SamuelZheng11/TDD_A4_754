@@ -5,4 +5,8 @@ public class User {
     public boolean isSignedIn(){
         return true;
     }
+
+    public int getReviewCount() {
+        return 0;
+    }
 }
