@@ -15,4 +15,7 @@ public class PullRequest {
 
     public void addCodeReview(CodeReview codeReview) {
     }
+
+    public void removeCodeReviwer(User developer, User nonDeveloper) {
+    }
 }

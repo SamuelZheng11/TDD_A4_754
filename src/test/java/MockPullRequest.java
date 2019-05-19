@@ -30,4 +30,13 @@ public class MockPullRequest extends PullRequest {
         }
         return codeReviewers;
     }
+    public void removeCodeReviwer(User developer, User nonDeveloper) {
+        for (CodeReview cr: codeReviews){
+            if (cr.getCodeReviewer().equals(nonDeveloper)){
+                codeReviews.remove(cr);
+                return;
+            }
+        }
+    }
+
 }

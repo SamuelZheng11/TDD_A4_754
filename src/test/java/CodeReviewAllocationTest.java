@@ -53,6 +53,7 @@ public class CodeReviewAllocationTest {
         List<User> codeReviewers = _github.getCodeReviewers(pullRequest);
         assertTrue(codeReviewers.contains(nonDeveloper));
         pullRequest.removeCodeReviwer(developer, nonDeveloper);
+        codeReviewers = _github.getCodeReviewers(pullRequest);
         assertFalse(codeReviewers.contains(nonDeveloper));
     }
 }
