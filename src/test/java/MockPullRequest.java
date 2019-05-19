@@ -1,9 +1,11 @@
+import com.sun.org.apache.bcel.internal.classfile.Code;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class MockPullRequest extends PullRequest {
     private List<GitComment> commentsPosted = new ArrayList<GitComment>();
-
+    private List<CodeReview> codeReviews = new ArrayList<CodeReview>();
     public MockPullRequest(User user, String title, GitBranch source, GitBranch target) {
         super(user, title, source, target);
     }
@@ -17,5 +19,15 @@ public class MockPullRequest extends PullRequest {
         return commentsPosted;
     }
 
-    public List<User> getCodeReviewers(){}
+    public void addCodeReview(CodeReview codeReview) {
+        codeReviews.add(codeReview);
+    }
+
+    public List<User> getCodeReviewers(){
+        List<User> codeReviewers = new ArrayList<User>();
+        for (CodeReview codeReview : codeReviews){
+            codeReviewers.add(codeReview.getCodeReviewer());
+        }
+        return codeReviewers;
+    }
 }
