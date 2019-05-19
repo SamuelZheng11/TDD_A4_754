@@ -39,4 +39,7 @@ public class MockPullRequest extends PullRequest {
         }
     }
 
+    public void randomAllocateReviewer() {
+    }
+
 }

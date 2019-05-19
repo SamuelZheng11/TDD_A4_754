@@ -18,4 +18,7 @@ public class PullRequest {
 
     public void removeCodeReviwer(User developer, User nonDeveloper) {
     }
+
+    public void randomAllocateReviewer() {
+    }
 }
