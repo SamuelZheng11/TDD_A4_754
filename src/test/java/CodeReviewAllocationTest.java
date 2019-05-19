@@ -2,10 +2,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import static junit.framework.TestCase.assertNotNull;
-import static junit.framework.TestCase.fail;
+import static junit.framework.TestCase.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -77,5 +78,29 @@ public class CodeReviewAllocationTest {
             fail("Random allocation did not allocate ONE code reviewer");
         }
         assertNotNull(codeReviewers.get(0));
+    }
+
+    /*10)The count will be updated after the allocation. The count information is stored in the database as well.
+     * */
+    @Test
+    public void TestUser() {
+        //Given
+        List<User> allUsers = DatabaseManager.getAllUsers();
+        Map<User, Integer> userReviewCountMap = new HashMap<User, Integer>();
+        //getting all review counts of all users
+        for( User u:allUsers){
+            userReviewCountMap.put(u, u.getReviewCount());
+        }
+        PullRequest pullRequest = _github.createPullRequest("Test random code reviewers", sourceBranch, targetBranch);
+
+        //When
+        pullRequest.randomAllocateReviewer();
+
+        //Assert
+        List<User> users = _github.getCodeReviwers(pullRequest);
+        User codeReviewer = users.get(0);
+        int initialReviewCount = userReviewCountMap.get(codeReviewer);
+        assertEquals(codeReviewer.getReviewCount(), initialReviewCount+1);
+
     }
 }
