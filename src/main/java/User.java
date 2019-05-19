@@ -1,5 +1,5 @@
 public class User {
-
+    private int reviewCount = 0;
     public User(String name, UserType type){}
 
     public boolean isSignedIn(){
@@ -7,6 +7,10 @@ public class User {
     }
 
     public int getReviewCount() {
-        return 0;
+        return reviewCount;
+    }
+
+    public void incrementReviewCount() {
+        reviewCount +=1;
     }
 }

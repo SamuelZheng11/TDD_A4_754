@@ -6,6 +6,7 @@ public class CodeReview {
         this.pullRequest = pullRequest;
         this.requester = developer;
         this.codeReviewer = nonDeveloper;
+        nonDeveloper.incrementReviewCount();
         pullRequest.addCodeReview(this);
     }
 

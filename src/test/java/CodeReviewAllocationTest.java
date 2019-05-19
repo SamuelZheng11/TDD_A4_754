@@ -83,12 +83,12 @@ public class CodeReviewAllocationTest {
     /*10)The count will be updated after the allocation. The count information is stored in the database as well.
      * */
     @Test
-    public void TestUser() {
+    public void TestUserCodeReviewIncreases() {
         //Given
-        List<User> allUsers = DatabaseManager.getAllUsers();
+        List<User> allUsers = DatabaseManager.getInstance().getAllUsers();
         Map<User, Integer> userReviewCountMap = new HashMap<User, Integer>();
         //getting all review counts of all users
-        for( User u:allUsers){
+        for(User u : allUsers){
             userReviewCountMap.put(u, u.getReviewCount());
         }
         PullRequest pullRequest = _github.createPullRequest("Test random code reviewers", sourceBranch, targetBranch);

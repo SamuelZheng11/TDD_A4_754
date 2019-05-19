@@ -2,6 +2,7 @@ import com.sun.org.apache.bcel.internal.classfile.Code;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class MockPullRequest extends PullRequest {
     private List<GitComment> commentsPosted = new ArrayList<GitComment>();
@@ -40,8 +41,11 @@ public class MockPullRequest extends PullRequest {
     }
 
     public void randomAllocateReviewer() {
-        User nonDeveloper = new User("", UserType.NonDeveloper);
-        new CodeReview(this, null, nonDeveloper);
+        Random rand = new Random();
+        DatabaseManager instance = DatabaseManager.getInstance();
+        List<User> allUsers = instance.getAllUsers();
+        User codeReviewer = allUsers.get(rand.nextInt(allUsers.size()));
+        new CodeReview(this, null, codeReviewer);
     }
 
 }
