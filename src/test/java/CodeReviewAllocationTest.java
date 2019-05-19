@@ -38,7 +38,7 @@ public class CodeReviewAllocationTest {
         //When
         CodeReview codeReview = new CodeReview(pullRequest, developer, nonDeveloper);
         //Assert
-        List<User> codeReviewers = pullRequest.getCodeReviewers();
+        List<User> codeReviewers = _github.getCodeReviewers(pullRequest);
         assertTrue(codeReviewers.contains(nonDeveloper));
     }
 }

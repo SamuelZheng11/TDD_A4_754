@@ -16,4 +16,6 @@ public class MockPullRequest extends PullRequest {
     public List<GitComment> getCommentsPosted() {
         return commentsPosted;
     }
+
+    public List<User> getCodeReviewers(){}
 }

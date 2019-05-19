@@ -16,4 +16,6 @@ public interface GithubApi {
 
     public List<GitComment> getPullRequestComments(PullRequest pullrequest);
 
+    public List<User> getCodeReviewers(PullRequest pullRequest);
+
 }

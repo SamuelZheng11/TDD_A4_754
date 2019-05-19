@@ -41,4 +41,6 @@ public class MockGithubModule implements GithubApi{
         }
         return null;
     }
+
+    public List<User> getCodeReviewers(PullRequest pullRequest) {}
 }
