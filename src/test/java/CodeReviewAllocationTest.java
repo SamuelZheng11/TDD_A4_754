@@ -1,7 +1,6 @@
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,7 +21,6 @@ public class CodeReviewAllocationTest {
     public GitBranch sourceBranch = new GitBranch(sourceBranchName, committed_code);
     public GitBranch targetBranch = new GitBranch(targetBranchName, committed_code);
 
-    private User _developer;
     private GithubApi _github;
 
     @Before
@@ -34,7 +32,6 @@ public class CodeReviewAllocationTest {
      * 8. The developer can add/delete one or more non-developer reviewers in this
      * tool. A database is used to store the reviewers’ information.
      */
-    //Requirement(8)
     @Test
     public void TestDeveloperCanAddCodeReviewer() {
         //Given
