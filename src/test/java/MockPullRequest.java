@@ -1,5 +1,3 @@
-import com.sun.org.apache.bcel.internal.classfile.Code;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -42,7 +40,7 @@ public class MockPullRequest extends PullRequest {
 
     public void randomAllocateReviewer() {
         Random rand = new Random();
-        DatabaseManager instance = DatabaseManager.getInstance();
+        MockDatabasePersistence instance = MockDatabasePersistence.getInstance();
         List<User> allUsers = instance.getAllUsers();
         User codeReviewer = allUsers.get(rand.nextInt(allUsers.size()));
         new CodeReview(this, null, codeReviewer);

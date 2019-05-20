@@ -1,14 +1,14 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class DatabaseManager {
+public class MockDatabasePersistence {
     private List<User> allUsers = new ArrayList<User>();
-    private static DatabaseManager instance;
-    private DatabaseManager(){}
+    private static MockDatabasePersistence instance;
+    private MockDatabasePersistence(){}
 
-    public static DatabaseManager getInstance(){
+    public static MockDatabasePersistence getInstance(){
         if (instance==null){
-            instance = new DatabaseManager();
+            instance = new MockDatabasePersistence();
         }
         return instance;
     }

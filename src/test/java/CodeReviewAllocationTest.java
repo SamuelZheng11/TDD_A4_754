@@ -82,7 +82,7 @@ public class CodeReviewAllocationTest {
     @Test
     public void TestUserCodeReviewIncreases() {
         //Given
-        List<User> allUsers = DatabaseManager.getInstance().getAllUsers();
+        List<User> allUsers = MockDatabasePersistence.getInstance().getAllUsers();
         Map<User, Integer> userReviewCountMap = new HashMap<User, Integer>();
         //getting all review counts of all users
         for(User u : allUsers){
