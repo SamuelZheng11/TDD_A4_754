@@ -41,7 +41,7 @@ public class GithubUnitTest {
         //When
         _github.signIn(username, password);
         //Assert
-        assertTrue(developer.isSignedIn());
+        assertTrue(_github.isSignedIn(developer));
     }
 
     @Test
@@ -51,7 +51,7 @@ public class GithubUnitTest {
         //When
         _github.signOut(developer);
         //Assert
-        assertFalse(developer.isSignedIn());
+        assertFalse(_github.isSignedIn(developer));
     }
 
 

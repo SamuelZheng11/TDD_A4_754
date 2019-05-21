@@ -18,6 +18,10 @@ public class MockGithubModule implements GithubApi{
         _currentUser = null;
     }
 
+    public boolean isSignedIn(User user) {
+        return false;
+    }
+
     public PullRequest createPullRequest(String title, GitBranch head, GitBranch target) {
         mockPR = new MockPullRequest(_currentUser, title, head, target);
         return mockPR;

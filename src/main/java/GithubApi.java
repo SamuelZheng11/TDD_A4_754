@@ -6,6 +6,8 @@ public interface GithubApi {
 
     public void signOut(User user);
 
+    public boolean isSignedIn(User user);
+
     public PullRequest createPullRequest(String title, GitBranch head, GitBranch target);
 
     public List<GitComment> getPullRequestComments(PullRequest pullrequest);
