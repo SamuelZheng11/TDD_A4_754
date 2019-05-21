@@ -12,15 +12,11 @@ public class MockDatabasePersistence {
         }
         return instance;
     }
-    public List<User> getAllUsers() {
+    public List<User> getAllCodeReviewers() {
         if (allUsers.size()==0) {
             allUsers = new ArrayList<User>();
             for (int i = 0; i < 10; i++) {
-                UserType ut = UserType.Developer;
-                if (i % 2 == 0) {
-                    ut = UserType.NonDeveloper;
-                }
-                allUsers.add(new User(String.format("%d", i), ut));
+                allUsers.add(new User(String.format("%d", i), UserType.NonDeveloper));
             }
         }
         return allUsers;

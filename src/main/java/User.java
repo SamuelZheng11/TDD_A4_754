@@ -1,6 +1,14 @@
 public class User {
+    private final String name;
     private int reviewCount = 0;
-    public User(String name, UserType type){}
+    public User(String name, UserType type){
+        this.name = name;
+    }
+
+    public User(String userName, UserType nonDeveloper, int reviewCount) {
+        this.name = userName;
+        this.reviewCount = reviewCount;
+    }
 
     public boolean isSignedIn(){
         return true;
@@ -12,5 +20,10 @@ public class User {
 
     public void incrementReviewCount() {
         reviewCount +=1;
+        ReviewerPersistence.getInstance().addReviewCount(this);
+    }
+
+    public String getName(){
+        return name;
     }
 }
