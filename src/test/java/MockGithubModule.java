@@ -1,10 +1,15 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class MockGithubModule implements GithubApi{
 
-    private GithubUnitTest testvalues = new GithubUnitTest();
+    private GithubUnitTest testvalues;
     private User _currentUser;
     private MockPullRequest mockPR;
+
+    public MockGithubModule(GithubUnitTest suite){
+        testvalues =  suite;
+    }
 
     public User signIn(String username, String password) {
         if (username == testvalues.username && password == testvalues.password){
