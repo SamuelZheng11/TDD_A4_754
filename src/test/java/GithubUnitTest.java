@@ -18,17 +18,17 @@ public class GithubUnitTest {
     public User developer = new User("", UserType.Developer);
     public User nonDeveloper = new User("", UserType.NonDeveloper);
 
-    public GitCommit commit = new GitCommit("Commit Message", "GithubPullRequestFetchTest_Commit");
-    public GitCommit[] committed_code = {commit};
-    public GitBranch sourceBranch = new GitBranch(sourceBranchName, committed_code);
-    public GitBranch targetBranch = new GitBranch(targetBranchName, committed_code);
+    public GitCommit commit;
+    public GitCommit[] committed_code;
+    public GitBranch sourceBranch;
+    public GitBranch targetBranch;
     public GitComment nonDevComment = new GitComment("This code is great", nonDeveloper);
     public List<GitComment> commentList = Arrays.asList(nonDevComment);
 
     private GithubApi _github;
 
     @Before public void initialize(){
-        _github = new MockGithubModule();
+        _github = new MockGithubModule(this);
         _github.signIn(username, password);
     }
 
@@ -51,6 +51,21 @@ public class GithubUnitTest {
         _github.signOut(developer);
         //Assert
         assertFalse(_github.isSignedIn(developer));
+    }
+
+    //Requirement (2)
+    @Test
+    public void GithubPullRequestFetchTest() {
+        //Given
+        commit = new GitCommit("Commit Message", "GithubPullRequestFetchTest_Commit");
+        committed_code = new GitCommit[]{commit};
+        sourceBranch = new GitBranch(sourceBranchName, committed_code);
+        targetBranch = new GitBranch(targetBranchName, null);
+        //When
+        _github.createPullRequest("", sourceBranch, targetBranch);
+        //Assert
+        List<GitCommit> commits = _github.getCommits(sourceBranchName);
+        assertTrue(commits.contains(commit));
     }
 
 

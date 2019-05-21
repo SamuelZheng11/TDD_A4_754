@@ -2,14 +2,17 @@ import java.util.List;
 
 public interface GithubApi {
 
-    public User signIn(String username, String password);
+    User signIn(String username, String password);
 
-    public void signOut(User user);
+    void signOut(User user);
 
-    public boolean isSignedIn(User user);
+    boolean isSignedIn(User user);
 
-    public PullRequest createPullRequest(String title, GitBranch head, GitBranch target);
+    PullRequest createPullRequest(String title, GitBranch head, GitBranch target);
 
-    public List<GitComment> getPullRequestComments(PullRequest pullrequest);
+    List<GitComment> getPullRequestComments(PullRequest pullrequest);
 
+    PullRequest getPullRequest(String branchName);
+
+    List<GitCommit> getCommits(String branchName);
 }
