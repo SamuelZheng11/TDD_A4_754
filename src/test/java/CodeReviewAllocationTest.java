@@ -218,6 +218,7 @@ public class CodeReviewAllocationTest {
         //check that the database is initially correct
         int databaseReviewCount = ReviewerPersistence.getInstance().getReviewCountForUser(randomlyAllocatedReviewer);
         assertEquals(randomlyAllocatedReviewer.getReviewCount(), databaseReviewCount);
+        Mockito.verify(spiedReviewerPersistanceSingleton, times(1)).addReviewCount(randomlyAllocatedReviewer);
 
         //Assert
         List<User> codeReviewers = _github.getCodeReviewers(pullRequest);
@@ -231,17 +232,40 @@ public class CodeReviewAllocationTest {
      * */
     @Test
     public void TestUserCodeReviewIncreases() {
+        FindIterable iterable = mock(FindIterable.class);
+        MongoCursor cursor = mock(MongoCursor.class);
+        Document nonDeveloperDocument = mock(Document.class);
+
+        //Use Mock tool to mock database behaviour
+        Mockito.when(collection.find()).thenReturn(iterable);
+        Mockito.when(iterable.iterator()).thenReturn(cursor);
+        Mockito.when(cursor.hasNext()).thenReturn(true).thenReturn(true).thenReturn(false);
+        Mockito.when(cursor.next()).thenReturn(nonDeveloperDocument);
+        Mockito.when(nonDeveloperDocument.get(ReviewerPersistence.REVIEW_COUNT_KEY)).thenReturn(0).thenReturn(5);
+        Mockito.when(nonDeveloperDocument.get(ReviewerPersistence.USERTYPE_KEY)).thenReturn(UserType.NonDeveloper);
+        Mockito.when(nonDeveloperDocument.get(ReviewerPersistence.FIRST_NAME_KEY)).thenReturn("1").thenReturn("2");
+
+
         //Given
-        List<User> allUsers = MockDatabasePersistence.getInstance().getAllCodeReviewers();
+        List<User> allUsers = ReviewerPersistence.getInstance().getAllCodeReviewers();
         Map<User, Integer> userReviewCountMap = new HashMap<User, Integer>();
         //getting all review counts of all users
         for(User u : allUsers){
             userReviewCountMap.put(u, u.getReviewCount());
         }
-        PullRequest pullRequest = _github.createPullRequest("Test random code reviewers", sourceBranch, targetBranch);
+        //Use Mock tool to mock database behaviour
+        Mockito.when(collection.find()).thenReturn(iterable);
+        Mockito.when(iterable.iterator()).thenReturn(cursor);
+        Mockito.when(cursor.hasNext()).thenReturn(true).thenReturn(true).thenReturn(false);
+        Mockito.when(cursor.next()).thenReturn(nonDeveloperDocument);
+        Mockito.when(nonDeveloperDocument.get(ReviewerPersistence.REVIEW_COUNT_KEY)).thenReturn(0).thenReturn(5);
+        Mockito.when(nonDeveloperDocument.get(ReviewerPersistence.USERTYPE_KEY)).thenReturn(UserType.NonDeveloper);
+        Mockito.when(nonDeveloperDocument.get(ReviewerPersistence.FIRST_NAME_KEY)).thenReturn("1").thenReturn("2");
 
+        //Given
+        PullRequest pullRequest = _github.createPullRequest("Test random code reviewers count", sourceBranch, targetBranch);
         //When
-        pullRequest.randomAllocateReviewer();
+        CodeReview cr = pullRequest.randomAllocateReviewer();
 
         //Assert
         List<User> users = _github.getCodeReviewers(pullRequest);
