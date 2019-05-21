@@ -4,6 +4,7 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class GithubUnitTest {
@@ -24,12 +25,33 @@ public class GithubUnitTest {
     public GitComment nonDevComment = new GitComment("This code is great", nonDeveloper);
     public List<GitComment> commentList = Arrays.asList(nonDevComment);
 
-    private User _developer;
     private GithubApi _github;
 
     @Before public void initialize(){
         _github = new MockGithubModule();
         _github.signIn(username, password);
+    }
+
+    //Requirement (1)
+    @Test
+    public void GithubSignInTest() {
+        //Given
+        _github.signOut(developer);
+        User signInDeveloper = developer;
+        //When
+        _github.signIn(username, password);
+        //Assert
+        assertTrue(developer.isSignedIn());
+    }
+
+    @Test
+    public void GithubSignOutTest() {
+        //Given developer is signed in from initialise
+
+        //When
+        _github.signOut(developer);
+        //Assert
+        assertFalse(developer.isSignedIn());
     }
 
 

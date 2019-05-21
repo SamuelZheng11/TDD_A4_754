@@ -14,7 +14,7 @@ public class MockGithubModule implements GithubApi{
         return null;
     }
 
-    public void signOut() {
+    public void signOut(User user) {
         _currentUser = null;
     }
 
