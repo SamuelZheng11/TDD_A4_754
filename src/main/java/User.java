@@ -23,6 +23,11 @@ public class User {
         ReviewerPersistence.getInstance().addReviewCount(this);
     }
 
+    public void decrementReviewCount() {
+        reviewCount -=1;
+        ReviewerPersistence.getInstance().addReviewCount(this);
+    }
+
     public String getName(){
         return name;
     }

@@ -33,6 +33,7 @@ public class MockPullRequest extends PullRequest {
         for (CodeReview cr: codeReviews){
             if (cr.getCodeReviewer().equals(nonDeveloper)){
                 codeReviews.remove(cr);
+                cr.getCodeReviewer().decrementReviewCount();
                 return;
             }
         }

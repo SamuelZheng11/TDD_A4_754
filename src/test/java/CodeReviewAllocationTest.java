@@ -105,6 +105,7 @@ public class CodeReviewAllocationTest {
         MongoCursor cursor = Mockito.mock(MongoCursor.class);
         Document nonDeveloperDocument = Mockito.mock(Document.class);
 
+        //Use Mock tool to mock database behaviour
         Mockito.when(collection.find(new Document(ReviewerPersistence.FIRST_NAME_KEY, nonDeveloper.getName()))).thenReturn(iterable);
         Mockito.when(iterable.iterator()).thenReturn(cursor);
         Mockito.when(cursor.hasNext()).thenReturn(true).thenReturn(false);
@@ -124,16 +125,34 @@ public class CodeReviewAllocationTest {
 
     @Test
     public void TestDeveloperCanRemoveCodeReviewer() {
+
         //Given
         PullRequest pullRequest = _github.createPullRequest("Test remove code reviewers", sourceBranch, targetBranch);
-        //When
+        int initialReviewCount = nonDeveloper.getReviewCount();
         CodeReview codeReview = new CodeReview(pullRequest, developer, nonDeveloper);
-        List<User> codeReviewers = _github.getCodeReviewers(pullRequest);
-        assertTrue(codeReviewers.contains(nonDeveloper));
-        //Assert
+
+        FindIterable iterable = Mockito.mock(FindIterable.class);
+        MongoCursor cursor = Mockito.mock(MongoCursor.class);
+        Document nonDeveloperDocument = Mockito.mock(Document.class);
+
+        //Use Mock tool to mock database behaviour
+        Mockito.when(collection.find(new Document(ReviewerPersistence.FIRST_NAME_KEY, nonDeveloper.getName()))).thenReturn(iterable);
+        Mockito.when(iterable.iterator()).thenReturn(cursor);
+        Mockito.when(cursor.hasNext()).thenReturn(true).thenReturn(false);
+        Mockito.when(cursor.next()).thenReturn(nonDeveloperDocument);
+        Mockito.when(nonDeveloperDocument.get(ReviewerPersistence.REVIEW_COUNT_KEY)).thenReturn(nonDeveloper.getReviewCount());
+
+        //check that the database is initially correct
+        int databaseReviewCount = ReviewerPersistence.getInstance().getReviewCountForUser(nonDeveloper);
+        assertEquals(nonDeveloper.getReviewCount(), databaseReviewCount);
+
+        //When
         pullRequest.removeCodeReviwer(developer, nonDeveloper);
-        codeReviewers = _github.getCodeReviewers(pullRequest);
+
+        //Then
+        List<User> codeReviewers = _github.getCodeReviewers(pullRequest);
         assertFalse(codeReviewers.contains(nonDeveloper));
+        assertEquals(initialReviewCount,nonDeveloper.getReviewCount());
     }
 
     /**
