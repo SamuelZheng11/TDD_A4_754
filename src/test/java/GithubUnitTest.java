@@ -37,11 +37,10 @@ public class GithubUnitTest {
     public void GithubSignInTest() {
         //Given
         _github.signOut(developer);
-        User signInDeveloper = developer;
         //When
-        _github.signIn(username, password);
+        User signInDeveloper = _github.signIn(username, password);
         //Assert
-        assertTrue(_github.isSignedIn(developer));
+        assertTrue(_github.isSignedIn(signInDeveloper));
     }
 
     @Test
