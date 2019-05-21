@@ -4,10 +4,6 @@ public class PullRequest {
 
     }
 
-    public boolean isCompleted(){
-        return true;
-    }
-
     public void postComment(GitComment discussion){
 
     }
