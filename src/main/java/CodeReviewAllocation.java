@@ -33,9 +33,7 @@ public class CodeReviewAllocation {
         for (User cr: allCodeReviewers){
             totalReviewCount += cr.getReviewCount();
         }
-        if(totalReviewCount == 0){
-            totalReviewCount = allCodeReviewers.size();
-        }
+
         for (User cr: allCodeReviewers){
             if (cr.getReviewCount()==0){
                 chance += totalReviewCount;
