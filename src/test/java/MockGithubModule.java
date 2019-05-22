@@ -6,6 +6,7 @@ public class MockGithubModule implements GithubApi{
     private GithubUnitTest testvalues;
     private User _currentUser;
     private MockPullRequest mockPR;
+    private PullRequest storedPullRequest = null;
 
     public MockGithubModule(GithubUnitTest suite){
         testvalues =  suite;
@@ -33,7 +34,7 @@ public class MockGithubModule implements GithubApi{
     }
 
     public PullRequest getPullRequest(String branchName) {
-        return null;
+        return storedPullRequest;
     }
 
     public List<GitCommit> getCommits(String branchName) {
@@ -42,8 +43,10 @@ public class MockGithubModule implements GithubApi{
         return list;
     }
 
-    public void approvePullRequest(String branchName) {
-
+    public boolean approvePullRequest(PullRequest pr) {
+        storedPullRequest = pr;
+        pr.setCompletedStatus(true);
+        return true;
     }
 
     public List<GitComment> getPullRequestComments(PullRequest pullRequest) {
