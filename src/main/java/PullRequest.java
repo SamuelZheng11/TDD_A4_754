@@ -1,3 +1,5 @@
+import java.util.List;
+
 public class PullRequest {
 
 
@@ -13,13 +15,17 @@ public class PullRequest {
 
     }
 
-    public void addCodeReview(CodeReview codeReview) {
+    public CodeReviewAllocation createCodeReview(User requester, User codeReviewer){
+        return null;
+    }
+
+
+    public void addCodeReview(CodeReviewAllocation codeReviewAllocation) {
     }
 
     public void removeCodeReviwer(User developer, User nonDeveloper) {
     }
 
-    public CodeReview randomAllocateReviewer() {
-        return null;
-    }
+    public List<User> getCodeReviewers(){return null;};
+    
 }

@@ -1,6 +1,5 @@
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCursor;
-import org.bson.types.ObjectId;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,16 +24,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 public class CodeReviewAllocationTest {
-    public String sourceBranchName = "GithubPullRequestFetchTest_Branch";
-    public String targetBranchName = "GithubPullRequestFetchTest_TargetBranch";
+    private String sourceBranchName = "GithubPullRequestFetchTest_Branch";
+    private String targetBranchName = "GithubPullRequestFetchTest_TargetBranch";
 
-    public User developer = new User("", UserType.Developer);
-    public User nonDeveloper = new User("codeReviewer", UserType.NonDeveloper);
+    private User developer = new User("", UserType.Developer);
+    private User nonDeveloper = new User("codeReviewer", UserType.NonDeveloper);
 
-    public GitCommit commit = new GitCommit("Commit Message", "GithubPullRequestFetchTest_Commit");
-    public GitCommit[] committed_code = {commit};
-    public GitBranch sourceBranch = new GitBranch(sourceBranchName, committed_code);
-    public GitBranch targetBranch = new GitBranch(targetBranchName, committed_code);
+    private GitCommit commit = new GitCommit("Commit Message", "GithubPullRequestFetchTest_Commit");
+    private GitCommit[] committed_code = {commit};
+    private GitBranch sourceBranch = new GitBranch(sourceBranchName, committed_code);
+    private GitBranch targetBranch = new GitBranch(targetBranchName, committed_code);
 
     private GithubApi _github;
 
@@ -43,12 +42,19 @@ public class CodeReviewAllocationTest {
     private String usersCollectionName;
     private MongoDatabase mongoDatabase;
     private MongoCollection<Document> collection;
-    private ReviewerPersistence spiedReviewerPersistanceSingleton;
+    private ReviewerPersistence spiedRPInstance;
 
+    private FindIterable mockIterable;
+    private MongoCursor mockCursor;
+    private Document mockCodeReviewerDocument;
+
+    private static String NAME_OF_INSTANCE_FIELD = "instance";
     @Before
     public void initialize(){
-        _github = new MockGithubModule();
         // Given
+
+        _github = new MockGithubModule();
+        //mocking database
         mongoClient = mock(MongoClient.class);
         usersDBName = "users-db";
         usersCollectionName = "user-collection";
@@ -58,14 +64,22 @@ public class CodeReviewAllocationTest {
 
         collection = mock(MongoCollection.class);
         Mockito.doReturn(collection).when(mongoDatabase).getCollection(usersCollectionName);
-        spiedReviewerPersistanceSingleton = Mockito.spy(ReviewerPersistence.getInstance());
-        setMock(spiedReviewerPersistanceSingleton);
-        ReviewerPersistence.getInstance().addDatabase(mongoClient, usersDBName, usersCollectionName);
+
+        //spying database behaviour
+        spiedRPInstance = Mockito.spy(ReviewerPersistence.getInstance());
+        setSpyMock(spiedRPInstance);
+        spiedRPInstance.addDatabase(mongoClient, usersDBName, usersCollectionName);
+
+        //mocking database behaviour
+        mockIterable = mock(FindIterable.class);
+        mockCursor = mock(MongoCursor.class);
+        mockCodeReviewerDocument = mock(Document.class);
+
     }
 
-    private void setMock(ReviewerPersistence mock) {
+    private void setSpyMock(ReviewerPersistence mock) {
         try {
-            Field instance = ReviewerPersistence.class.getDeclaredField("instance");
+            Field instance = ReviewerPersistence.class.getDeclaredField(NAME_OF_INSTANCE_FIELD);
             instance.setAccessible(true);
             instance.set(instance, mock);
         } catch (Exception e) {
@@ -73,42 +87,30 @@ public class CodeReviewAllocationTest {
         }
     }
 
+    //To not confuse other tests with a mocked reviewer persistence singleton
     @After
     public void resetSingleton() throws Exception {
-        Field instance = ReviewerPersistence.class.getDeclaredField("instance");
+        Field instance = ReviewerPersistence.class.getDeclaredField(NAME_OF_INSTANCE_FIELD);
         instance.setAccessible(true);
         instance.set(null, null);
     }
 
-    @Test
-    public void shouldInitializeMongoDBClientWhenCreatingMyCash() {
+    private void mockDatabaseBehaviourWhenAddReviewCountIsCalled(User user){
+        Mockito.when(collection.find(new Document(ReviewerPersistence.FIRST_NAME_KEY, user.getName()))).thenReturn(mockIterable);
+        Mockito.when(mockIterable.iterator()).thenReturn(mockCursor);
+        Mockito.when(mockCursor.hasNext()).thenReturn(true).thenReturn(false);
+        Mockito.when(mockCursor.next()).thenReturn(mockCodeReviewerDocument);
+        Mockito.when(mockCodeReviewerDocument.get(ReviewerPersistence.REVIEW_COUNT_KEY)).thenReturn(user.getReviewCount());
+    }
 
-        // Given
-        Mockito.doReturn(mongoDatabase).when(mongoClient).getDatabase(usersDBName);
-
-        MongoCollection<Document> collection = mock(MongoCollection.class);
-        Mockito.doReturn(collection).when(mongoDatabase).getCollection(usersCollectionName);
-
-        FindIterable iterable = mock(FindIterable.class);
-        MongoCursor cursor = mock(MongoCursor.class);
-        Document bob = new Document("_id", new ObjectId("579397d20c2dd41b9a8a09eb")).append("firstName", "Bob").append("lastName", "Bobberson");
-
-        Mockito.when(collection.find(new Document("lastName", "Bobberson"))).thenReturn(iterable);
-        Mockito.when(iterable.iterator()).thenReturn(cursor);
-        Mockito.when(cursor.hasNext()).thenReturn(true).thenReturn(false);
-        Mockito.when(cursor.next()).thenReturn(bob);
-
-        List<Document> people = new ArrayList<>();
-        FindIterable<Document> documents = collection.find(new Document("lastName", "Bobberson"));
-        MongoCursor<Document> iterator = documents.iterator();
-        while (iterator.hasNext()) {
-            Document document = iterator.next();
-            people.add(document);
-        }
-
-
-        assertEquals(bob, people.get(0));
-
+    private void mockDatabaseBehaviourWhenGetAllCodeReviewersIsCalled(){
+        Mockito.when(collection.find()).thenReturn(mockIterable);
+        Mockito.when(mockIterable.iterator()).thenReturn(mockCursor);
+        Mockito.when(mockCursor.hasNext()).thenReturn(true).thenReturn(true).thenReturn(false);
+        Mockito.when(mockCursor.next()).thenReturn(mockCodeReviewerDocument);
+        Mockito.when(mockCodeReviewerDocument.get(ReviewerPersistence.REVIEW_COUNT_KEY)).thenReturn(0).thenReturn(5).thenReturn(0).thenReturn(5);
+        Mockito.when(mockCodeReviewerDocument.get(ReviewerPersistence.USERTYPE_KEY)).thenReturn(UserType.NonDeveloper);
+        Mockito.when(mockCodeReviewerDocument.get(ReviewerPersistence.FIRST_NAME_KEY)).thenReturn("1").thenReturn("2");
     }
 
     /**
@@ -118,68 +120,51 @@ public class CodeReviewAllocationTest {
     @Test
     public void TestDeveloperCanAddCodeReviewer() {
         //Given
-        PullRequest pullRequest = _github.createPullRequest("Test add code reviewers", sourceBranch, targetBranch);
+        PullRequest mockPullRequest = Mockito.spy(_github.createPullRequest("Test add code reviewers", sourceBranch, targetBranch));
         int initialReviewCount = nonDeveloper.getReviewCount();
 
         //When
-        CodeReview codeReview = new CodeReview(pullRequest, developer, nonDeveloper);
-
-        FindIterable iterable = mock(FindIterable.class);
-        MongoCursor cursor = mock(MongoCursor.class);
-        Document nonDeveloperDocument = mock(Document.class);
-
-        //Use Mock tool to mock database behaviour
-        Mockito.when(collection.find(new Document(ReviewerPersistence.FIRST_NAME_KEY, nonDeveloper.getName()))).thenReturn(iterable);
-        Mockito.when(iterable.iterator()).thenReturn(cursor);
-        Mockito.when(cursor.hasNext()).thenReturn(true).thenReturn(false);
-        Mockito.when(cursor.next()).thenReturn(nonDeveloperDocument);
-        Mockito.when(nonDeveloperDocument.get(ReviewerPersistence.REVIEW_COUNT_KEY)).thenReturn(nonDeveloper.getReviewCount());
+        CodeReviewAllocation codeReviewAllocation = mockPullRequest.createCodeReview(developer, nonDeveloper);
+        mockDatabaseBehaviourWhenAddReviewCountIsCalled(nonDeveloper);
 
         //Then
-        List<User> codeReviewers = _github.getCodeReviewers(pullRequest);
+        List<User> codeReviewers = mockPullRequest.getCodeReviewers();
         assertTrue(codeReviewers.contains(nonDeveloper));
 
         assertEquals(initialReviewCount+1,nonDeveloper.getReviewCount());
 
-        int databaseReviewCount = ReviewerPersistence.getInstance().getReviewCountForUser(nonDeveloper);
-        assertEquals(nonDeveloper.getReviewCount(), databaseReviewCount);
-        Mockito.verify(spiedReviewerPersistanceSingleton, times(1)).addReviewCount(nonDeveloper);
-
+        Mockito.verify(spiedRPInstance, times(1)).updateReviewCount(nonDeveloper);
+        Mockito.verify(mockPullRequest, times(1)).createCodeReview(developer, nonDeveloper);
     }
 
     @Test
     public void TestDeveloperCanRemoveCodeReviewer() {
 
         //Given
-        PullRequest pullRequest = _github.createPullRequest("Test remove code reviewers", sourceBranch, targetBranch);
+        PullRequest mockPullRequest = Mockito.spy(_github.createPullRequest("Test remove code reviewers", sourceBranch, targetBranch));
         int initialReviewCount = nonDeveloper.getReviewCount();
-        CodeReview codeReview = new CodeReview(pullRequest, developer, nonDeveloper);
 
-        FindIterable iterable = mock(FindIterable.class);
-        MongoCursor cursor = mock(MongoCursor.class);
-        Document nonDeveloperDocument = mock(Document.class);
+        CodeReviewAllocation codeReviewAllocation = mockPullRequest.createCodeReview(developer, nonDeveloper);
+        mockDatabaseBehaviourWhenAddReviewCountIsCalled(nonDeveloper);
 
-        //Use Mock tool to mock database behaviour
-        Mockito.when(collection.find(new Document(ReviewerPersistence.FIRST_NAME_KEY, nonDeveloper.getName()))).thenReturn(iterable);
-        Mockito.when(iterable.iterator()).thenReturn(cursor);
-        Mockito.when(cursor.hasNext()).thenReturn(true).thenReturn(false);
-        Mockito.when(cursor.next()).thenReturn(nonDeveloperDocument);
-        Mockito.when(nonDeveloperDocument.get(ReviewerPersistence.REVIEW_COUNT_KEY)).thenReturn(nonDeveloper.getReviewCount());
-
-        //check that the database is initially correct
-        int databaseReviewCount = ReviewerPersistence.getInstance().getReviewCountForUser(nonDeveloper);
+        //check that the database is initially correct and the count has actually been increased
+        int databaseReviewCount = spiedRPInstance.getReviewCountForUser(nonDeveloper);
         assertEquals(nonDeveloper.getReviewCount(), databaseReviewCount);
+        assertEquals(initialReviewCount+1,nonDeveloper.getReviewCount());
 
         //When
-        pullRequest.removeCodeReviwer(developer, nonDeveloper);
+        mockPullRequest.removeCodeReviwer(developer, nonDeveloper);
 
         //Then
-        List<User> codeReviewers = _github.getCodeReviewers(pullRequest);
+        List<User> codeReviewers = mockPullRequest.getCodeReviewers();
         assertFalse(codeReviewers.contains(nonDeveloper));
         assertEquals(initialReviewCount,nonDeveloper.getReviewCount());
-        Mockito.verify(spiedReviewerPersistanceSingleton, times(2)).addReviewCount(nonDeveloper);
+        Mockito.verify(spiedRPInstance, times(2)).updateReviewCount(nonDeveloper);
+        Mockito.verify(mockPullRequest, times(1)).createCodeReview(developer, nonDeveloper);
+        Mockito.verify(mockPullRequest, times(1)).removeCodeReviwer(developer, nonDeveloper);
 
     }
+
 
     /**
      * 9) The tool can randomly choose a reviewer and allocate code review task to
@@ -189,89 +174,57 @@ public class CodeReviewAllocationTest {
     @Test
     public void TestRandomAllocateCRerToPR() {
 
-        FindIterable iterable = mock(FindIterable.class);
-        MongoCursor cursor = mock(MongoCursor.class);
-        Document nonDeveloperDocument = mock(Document.class);
-
-        //Use Mock tool to mock database behaviour
-        Mockito.when(collection.find()).thenReturn(iterable);
-        Mockito.when(iterable.iterator()).thenReturn(cursor);
-        Mockito.when(cursor.hasNext()).thenReturn(true).thenReturn(true).thenReturn(false);
-        Mockito.when(cursor.next()).thenReturn(nonDeveloperDocument);
-        Mockito.when(nonDeveloperDocument.get(ReviewerPersistence.REVIEW_COUNT_KEY)).thenReturn(0).thenReturn(5);
-        Mockito.when(nonDeveloperDocument.get(ReviewerPersistence.USERTYPE_KEY)).thenReturn(UserType.NonDeveloper);
-        Mockito.when(nonDeveloperDocument.get(ReviewerPersistence.FIRST_NAME_KEY)).thenReturn("1").thenReturn("2");
-
         //Given
-        PullRequest pullRequest = _github.createPullRequest("Test random code reviewers", sourceBranch, targetBranch);
-        //When
-        CodeReview cr = pullRequest.randomAllocateReviewer();
-        User randomlyAllocatedReviewer = cr.getCodeReviewer();
+        mockDatabaseBehaviourWhenGetAllCodeReviewersIsCalled();
+        PullRequest mockPullRequest = Mockito.spy(_github.createPullRequest("Test random code reviewers", sourceBranch, targetBranch));
 
-        //Use Mock tool to mock database behaviour
-        Mockito.when(collection.find(new Document(ReviewerPersistence.FIRST_NAME_KEY, randomlyAllocatedReviewer.getName()))).thenReturn(iterable);
-        Mockito.when(iterable.iterator()).thenReturn(cursor);
-        Mockito.when(cursor.hasNext()).thenReturn(true).thenReturn(false);
-        Mockito.when(cursor.next()).thenReturn(nonDeveloperDocument);
-        Mockito.when(nonDeveloperDocument.get(ReviewerPersistence.REVIEW_COUNT_KEY)).thenReturn(randomlyAllocatedReviewer.getReviewCount());
+        //When
+        CodeReviewAllocation codeReviewAllocation = new CodeReviewAllocation(mockPullRequest);
+        User randomlyAllocatedReviewer = codeReviewAllocation.randomAllocateReviewer();
+
+        mockDatabaseBehaviourWhenAddReviewCountIsCalled(randomlyAllocatedReviewer);
 
         //check that the database is initially correct
-        int databaseReviewCount = ReviewerPersistence.getInstance().getReviewCountForUser(randomlyAllocatedReviewer);
-        assertEquals(randomlyAllocatedReviewer.getReviewCount(), databaseReviewCount);
-        Mockito.verify(spiedReviewerPersistanceSingleton, times(1)).addReviewCount(randomlyAllocatedReviewer);
+        int databaseReviewCount = spiedRPInstance.getReviewCountForUser(randomlyAllocatedReviewer);
 
-        //Assert
-        List<User> codeReviewers = _github.getCodeReviewers(pullRequest);
+        //Then
+        List<User> codeReviewers = mockPullRequest.getCodeReviewers();
         if(codeReviewers.size() != 1){
             fail("Random allocation did not allocate ONE code reviewer");
         }
         assertNotNull(codeReviewers.get(0));
+        Mockito.verify(spiedRPInstance, times(1)).updateReviewCount(randomlyAllocatedReviewer);
+        Mockito.verify(mockPullRequest, times(1)).addCodeReview(codeReviewAllocation);
+
     }
 
     /*10)The count will be updated after the allocation. The count information is stored in the database as well.
      * */
     @Test
     public void TestUserCodeReviewIncreases() {
-        FindIterable iterable = mock(FindIterable.class);
-        MongoCursor cursor = mock(MongoCursor.class);
-        Document nonDeveloperDocument = mock(Document.class);
-
-        //Use Mock tool to mock database behaviour
-        Mockito.when(collection.find()).thenReturn(iterable);
-        Mockito.when(iterable.iterator()).thenReturn(cursor);
-        Mockito.when(cursor.hasNext()).thenReturn(true).thenReturn(true).thenReturn(false);
-        Mockito.when(cursor.next()).thenReturn(nonDeveloperDocument);
-        Mockito.when(nonDeveloperDocument.get(ReviewerPersistence.REVIEW_COUNT_KEY)).thenReturn(0).thenReturn(5);
-        Mockito.when(nonDeveloperDocument.get(ReviewerPersistence.USERTYPE_KEY)).thenReturn(UserType.NonDeveloper);
-        Mockito.when(nonDeveloperDocument.get(ReviewerPersistence.FIRST_NAME_KEY)).thenReturn("1").thenReturn("2");
-
-
         //Given
-        List<User> allUsers = ReviewerPersistence.getInstance().getAllCodeReviewers();
-        Map<User, Integer> userReviewCountMap = new HashMap<User, Integer>();
+        mockDatabaseBehaviourWhenGetAllCodeReviewersIsCalled();
+
+        List<User> allUsers = spiedRPInstance.getAllCodeReviewers();
+        Map<User, Integer> userReviewCountMap = new HashMap<>();
         //getting all review counts of all users
         for(User u : allUsers){
             userReviewCountMap.put(u, u.getReviewCount());
         }
-        //Use Mock tool to mock database behaviour
-        Mockito.when(collection.find()).thenReturn(iterable);
-        Mockito.when(iterable.iterator()).thenReturn(cursor);
-        Mockito.when(cursor.hasNext()).thenReturn(true).thenReturn(true).thenReturn(false);
-        Mockito.when(cursor.next()).thenReturn(nonDeveloperDocument);
-        Mockito.when(nonDeveloperDocument.get(ReviewerPersistence.REVIEW_COUNT_KEY)).thenReturn(0).thenReturn(5);
-        Mockito.when(nonDeveloperDocument.get(ReviewerPersistence.USERTYPE_KEY)).thenReturn(UserType.NonDeveloper);
-        Mockito.when(nonDeveloperDocument.get(ReviewerPersistence.FIRST_NAME_KEY)).thenReturn("1").thenReturn("2");
 
-        //Given
-        PullRequest pullRequest = _github.createPullRequest("Test random code reviewers count", sourceBranch, targetBranch);
+        PullRequest mockPullRequest = Mockito.spy(_github.createPullRequest("Test random code reviewers count", sourceBranch, targetBranch));
+
         //When
-        CodeReview cr = pullRequest.randomAllocateReviewer();
+        CodeReviewAllocation codeReviewAllocation = new CodeReviewAllocation(mockPullRequest);
+        codeReviewAllocation.randomAllocateReviewer();
 
-        //Assert
-        List<User> users = _github.getCodeReviewers(pullRequest);
+        //Then
+        List<User> users = mockPullRequest.getCodeReviewers();
         User codeReviewer = users.get(0);
         int initialReviewCount = userReviewCountMap.get(codeReviewer);
         assertEquals(codeReviewer.getReviewCount(), initialReviewCount+1);
 
+        Mockito.verify(spiedRPInstance, times(1)).updateReviewCount(codeReviewer);
+        Mockito.verify(mockPullRequest, times(1)).addCodeReview(codeReviewAllocation);
     }
 }

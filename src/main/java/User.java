@@ -20,12 +20,12 @@ public class User {
 
     public void incrementReviewCount() {
         reviewCount +=1;
-        ReviewerPersistence.getInstance().addReviewCount(this);
+        ReviewerPersistence.getInstance().updateReviewCount(this);
     }
 
     public void decrementReviewCount() {
         reviewCount -=1;
-        ReviewerPersistence.getInstance().addReviewCount(this);
+        ReviewerPersistence.getInstance().updateReviewCount(this);
     }
 
     public String getName(){

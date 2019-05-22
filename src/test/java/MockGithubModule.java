@@ -42,10 +42,4 @@ public class MockGithubModule implements GithubApi{
         return null;
     }
 
-    public List<User> getCodeReviewers(PullRequest pullRequest) {
-        if (pullRequest == mockPR){
-            return mockPR.getCodeReviewers();
-        }
-        return null;
-    }
 }
