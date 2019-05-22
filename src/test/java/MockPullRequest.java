@@ -39,4 +39,9 @@ public class MockPullRequest extends PullRequest {
         }
     }
 
+    public void randomAllocateReviewer() {
+        User nonDeveloper = new User("", UserType.NonDeveloper);
+        new CodeReview(this, null, nonDeveloper);
+    }
+
 }

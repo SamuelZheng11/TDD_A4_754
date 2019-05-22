@@ -4,6 +4,8 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
+import static junit.framework.TestCase.assertNotNull;
+import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -46,7 +48,7 @@ public class CodeReviewAllocationTest {
     @Test
     public void TestDeveloperCanRemoveCodeReviewer() {
         //Given
-        PullRequest pullRequest = _github.createPullRequest("Test add code reviewers", sourceBranch, targetBranch);
+        PullRequest pullRequest = _github.createPullRequest("Test remove code reviewers", sourceBranch, targetBranch);
         //When
         CodeReview codeReview = new CodeReview(pullRequest, developer, nonDeveloper);
         List<User> codeReviewers = _github.getCodeReviewers(pullRequest);
@@ -55,5 +57,25 @@ public class CodeReviewAllocationTest {
         pullRequest.removeCodeReviwer(developer, nonDeveloper);
         codeReviewers = _github.getCodeReviewers(pullRequest);
         assertFalse(codeReviewers.contains(nonDeveloper));
+    }
+
+    /**
+     * 9) The tool can randomly choose a reviewer and allocate code review task to
+     * this reviewer. The chance of being allocated is related to the count of
+     * reviews previously done by a reviewer, the lower count, the higher chance.
+     */
+    @Test
+    public void TestRandomAllocateCRerToPR() {
+
+        //Given
+        PullRequest pullRequest = _github.createPullRequest("Test random code reviewers", sourceBranch, targetBranch);
+        //When
+        pullRequest.randomAllocateReviewer();
+        //Assert
+        List<User> codeReviewers = _github.getCodeReviewers(pullRequest);
+        if(codeReviewers.size() != 1){
+            fail("Random allocation did not allocate ONE code reviewer");
+        }
+        assertNotNull(codeReviewers.get(0));
     }
 }
