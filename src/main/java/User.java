@@ -5,11 +5,6 @@ public class User {
         this.name = name;
     }
 
-    public User(String userName, UserType nonDeveloper, int reviewCount) {
-        this.name = userName;
-        this.reviewCount = reviewCount;
-    }
-
     public int getReviewCount() {
         return reviewCount;
     }

@@ -14,8 +14,4 @@ public class CodeReview {
         return codeReviewer;
     }
 
-    public PullRequest getPullRequest() {
-        return pullRequest;
-    }
-
 }
