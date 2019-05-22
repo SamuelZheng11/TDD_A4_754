@@ -10,9 +10,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 public class AutomationUnitTest {
 
@@ -71,6 +69,19 @@ public class AutomationUnitTest {
         }
 
         fail();
+    }
+
+    /**
+     * Requirement #: 5
+     */
+    @Test
+    public void linterAttemptsToLintAUnexpectedBranchTest() {
+        CommandLineRunner cmd = new CommandLineRunner();
+        cmd.setCommand("npm run lint");
+        IBranch branch = new GitBranch("unexpectedBranch", new GitCommit[]{});
+        List<String> results = cmd.runOnBranch(branch);
+
+        assertNull(results);
     }
 
     /**

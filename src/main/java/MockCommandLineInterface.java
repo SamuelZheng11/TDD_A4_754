@@ -10,6 +10,8 @@ public class MockCommandLineInterface implements ICommandLineInterface {
             branch = "linterRequiresFurtherAssistanceBranch";
         } else if (commands.contains("lintAutoFixBranch")) {
             branch = "lintAutoFixBranch";
+        } else {
+            return;
         }
     }
 
