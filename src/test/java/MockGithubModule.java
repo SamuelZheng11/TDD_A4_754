@@ -1,10 +1,18 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class MockGithubModule implements GithubApi{
 
-    private GithubUnitTest testvalues = new GithubUnitTest();
+    private GithubUnitTest testvalues;
     private User _currentUser;
     private MockPullRequest mockPR;
+    private PullRequest storedPullRequest = null;
+
+    public MockGithubModule(){}
+
+    public MockGithubModule(GithubUnitTest suite){
+        testvalues =  suite;
+    }
 
     public User signIn(String username, String password) {
         if (username == testvalues.username && password == testvalues.password){
@@ -14,8 +22,12 @@ public class MockGithubModule implements GithubApi{
         return null;
     }
 
-    public void signOut() {
+    public void signOut(User user) {
         _currentUser = null;
+    }
+
+    public boolean isSignedIn(User user) {
+        return (user.equals(_currentUser));
     }
 
     public PullRequest createPullRequest(String title, GitBranch head, GitBranch target) {
@@ -24,15 +36,19 @@ public class MockGithubModule implements GithubApi{
     }
 
     public PullRequest getPullRequest(String branchName) {
-        return null;
+        return storedPullRequest;
     }
 
     public List<GitCommit> getCommits(String branchName) {
-        return null;
+        ArrayList<GitCommit> list = new ArrayList<GitCommit>();
+        list.add(testvalues.commit);
+        return list;
     }
 
-    public void approvePullRequest(String branchName) {
-
+    public boolean approvePullRequest(PullRequest pr) {
+        storedPullRequest = pr;
+        pr.setCompletedStatus(true);
+        return true;
     }
 
     public List<GitComment> getPullRequestComments(PullRequest pullRequest) {
