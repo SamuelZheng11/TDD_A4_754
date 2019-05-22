@@ -50,11 +50,11 @@ public class NonDevCodeReviewTest {
 				
 		
 		//given
-		String MessageOnConnection="Network Connection established";
+		String MessageOnConnection="Network Connection error";
 		Mockito.when(network_interface.CreateConnection()).thenReturn(MessageOnConnection);
 		
 		//when
-		Mockito.when(developer_side_tool.ConnectionEstablished()).thenReturn("Network Connection Successful");
+		Mockito.when(developer_side_tool.ConnectionEstablished()).thenReturn("Network Connection error");
 		String checkMessage = developer_side_tool.ConnectionEstablished();
 		
 		//then
