@@ -26,6 +26,15 @@ public class MockPullRequest extends PullRequest {
         return codeReviewAllocation;
     }
 
+    public List<CodeReviewAllocation> createCodeReview(User requester, List<User> codeReviewers){
+        List<CodeReviewAllocation> newCodeReviewAllocations = new ArrayList<>();
+        for (User codeReviewer : codeReviewers){
+            CodeReviewAllocation codeReviewAllocation = this.createCodeReview(requester, codeReviewer);
+            newCodeReviewAllocations.add(codeReviewAllocation);
+        }
+        return newCodeReviewAllocations;
+    }
+
     public List<User> getCodeReviewers(){
         List<User> codeReviewers = new ArrayList<User>();
         for (CodeReviewAllocation codeReviewAllocation : codeReviewAllocations){
