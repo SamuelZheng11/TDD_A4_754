@@ -35,7 +35,7 @@ public class GithubUnitTest {
 
     //Requirement (1)
     @Test
-    public void GithubSignInTest() {
+    public void shouldAllowDeveloperToSignIn() {
         //Given
         _github.signOut(developer);
         //When
@@ -45,7 +45,7 @@ public class GithubUnitTest {
     }
 
     @Test
-    public void GithubSignOutTest() {
+    public void shouldAllowDeveloperToSignOut() {
         //Given developer is signed in from initialise
 
         //When
@@ -56,7 +56,7 @@ public class GithubUnitTest {
 
     //Requirement (2)
     @Test
-    public void GithubPullRequestFetchTest() {
+    public void shouldAutomaticallyFetchSourceCodeOnPullRequestCreated() {
         //Given
         commit = new GitCommit("Commit Message", "GithubPullRequestFetchTest_Commit");
         committed_code = new GitCommit[]{commit};
@@ -71,7 +71,7 @@ public class GithubUnitTest {
 
     //Requirement (3)
     @Test
-    public void GithubAutomaticMergeOnApprovalTest() {
+    public void shouldAutomaticallyMergeCodeAfterReviewApproved() {
         //Given
         String pullRequestTitle = "GithubPullRequestFetchTest_Branch";
         commit = new GitCommit("Commit Message", "GithubPullRequestFetchTest_Commit");
@@ -92,7 +92,7 @@ public class GithubUnitTest {
 
     //Requirement(4)
     @Test
-    public void AddCommentsAndCodeRequestsToGithubAutomaticallyTest() {
+    public void shouldAddCommentsAndCodeRequestsToGithubAutomatically() {
         //Given
         PullRequest pullrequest = _github.createPullRequest("Test adding comments automatically pull request", sourceBranch, targetBranch);
         //When
