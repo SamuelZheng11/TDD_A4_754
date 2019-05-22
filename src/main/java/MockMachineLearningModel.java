@@ -9,10 +9,12 @@ public class MockMachineLearningModel implements IMachineLearningModel {
     }
 
     public void runModelOnBranch() {
-
+        if (branchName == "allPassMLCheckBranch") {
+            return;
+        }
     }
 
     public Map<List<Integer>, AnomalyType> getResults() {
-        return null;
+        return anomalies;
     }
 }
