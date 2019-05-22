@@ -1,7 +1,4 @@
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class CodeReviewAllocation {
     private User requester;
@@ -45,7 +42,8 @@ public class CodeReviewAllocation {
 
         int randomValue = rand.nextInt(chance);
 
-        for (User cr: reviewChanceMap.keySet()){
+        Set<User> reviewChanceKeySet = reviewChanceMap.keySet();
+        for (User cr: reviewChanceKeySet){
             if (randomValue < reviewChanceMap.get(cr)){
                 this.codeReviewer = cr;
                 codeReviewer.incrementReviewCount();
