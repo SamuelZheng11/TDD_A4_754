@@ -168,11 +168,9 @@ public class AutomationUnitTest {
 
         Map<List<Integer>, AnomalyType> anomalyTypeMap = mlmp.identifyAnomalyLines(branch);
 
-        if (anomalyTypeMap.size() != 0) {
+        if (anomalyTypeMap != null) {
             fail();
         }
-
-        return;
     }
 
     /**

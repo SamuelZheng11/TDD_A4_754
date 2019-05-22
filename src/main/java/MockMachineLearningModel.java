@@ -22,7 +22,7 @@ public class MockMachineLearningModel implements IMachineLearningModel {
             } else if (branchName == "failBadCodeSmellsMLCheckBranch") {
                 anomalies.put(anomolyLineNumbers, AnomalyType.BadCodeSmell);
             } else {
-                return;
+                anomalies = null;
             }
         }
     }
