@@ -39,6 +39,25 @@ public class AutomationUnitTest {
      * Requirement #: 5
      */
     @Test
+    public void lintAutoFixTest() {
+        CommandLineRunner cmd = new CommandLineRunner();
+        cmd.setCommand("npm run lint");
+        IBranch branch = new GitBranch("lintAutoFixBranch", new GitCommit[]{});
+        List<String> results = cmd.runOnBranch(branch);
+
+        if (results.get(0) != "Fixed 2 error(s) in app/misc/repo.ts") {
+            fail();
+        }
+
+        if (results.get(1) != "All linting errors resolved") {
+            fail();
+        }
+    }
+
+    /**
+     * Requirement #: 5
+     */
+    @Test
     public void LinterFailsAndRequiresFurtherAssistanceTest() {
         CommandLineRunner cmd = new CommandLineRunner();
         cmd.setCommand("npm run lint");
