@@ -239,7 +239,7 @@ public class CodeReviewAllocationTest {
 
         mockDatabaseBehaviourWhenGetAllCodeReviewersIsCalled();
         List<User> allUsers = spiedRPInstance.getAllCodeReviewers();
-        Map<User, Integer> userReviewCountMap = new HashMap<>();
+        Map<User, Integer> userReviewCountMap = new HashMap<User, Integer>();
         //getting all review counts of all users
         for(User u : allUsers){
             userReviewCountMap.put(u, u.getReviewCount());
@@ -271,7 +271,7 @@ public class CodeReviewAllocationTest {
 
         mockDatabaseBehaviourWhenGetAllCodeReviewersIsCalled();
         List<User> allUsers = spiedRPInstance.getAllCodeReviewers();
-        Map<User, Integer> userReviewCountMap = new HashMap<>();
+        Map<User, Integer> userReviewCountMap = new HashMap<User, Integer>();
         //getting all review counts of all users
         for(User u : allUsers){
             userReviewCountMap.put(u, u.getReviewCount());
