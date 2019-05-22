@@ -23,7 +23,7 @@ public class CommandLineRunner {
         }
 
         String output;
-        while((output = reader.readLine()) != null) {
+        while((output = reader.readLine()) != null && (output = reader.readLine()) != "") {
             cliOutput.add(output);
         }
 
