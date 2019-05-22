@@ -81,7 +81,9 @@ public class AutomationUnitTest {
         IBranch branch = new GitBranch("unexpectedBranch", new GitCommit[]{});
         List<String> results = cmd.runOnBranch(branch);
 
-        assertNull(results);
+        if (results.size() == 0) {
+            return;
+        }
     }
 
     /**
@@ -159,10 +161,25 @@ public class AutomationUnitTest {
     }
 
     /**
+     * Requirement #: 6
+     */
+    @Test
+    public void AutomatedCodeInspectionIsAppliedToUnexpectedBranchTest() {
+        IBranch branch = new GitBranch("unexpectedBranch", new GitCommit[]{});
+        MachineLearningModelHandler mlmp = new MachineLearningModelHandler();
+
+        Map<List<Integer>, AnomalyType> anomalyTypeMap = mlmp.identifyAnomalyLines(branch);
+
+        if (anomalyTypeMap != null) {
+            fail();
+        }
+    }
+
+    /**
      * Requirement #: 7
      */
     @Test
-    public void TestSuccessfulGenerateCodeAbstractionsTest() {
+    public void SuccessfullyGeneratedCodeAbstractionsTest() {
         IAbstractionExtension ae = new MockAbstractionExtension();
         IBranch branch = new GitBranch("passCodeAbstractionGenerationBranch", new GitCommit[]{});
         ae.setBranch(branch);
@@ -201,7 +218,7 @@ public class AutomationUnitTest {
      * Requirement #: 7
      */
     @Test
-    public void TestGenerateCodeAbstractionUnexpectedLineInGeneratedFileTest() {
+    public void GenerateCodeAbstractionUnexpectedLineInGeneratedFileTest() {
         IAbstractionExtension ae = new MockAbstractionExtension();
         IBranch branch = new GitBranch("failCodeAbstractionGenerationBranch", new GitCommit[]{});
         ae.setBranch(branch);
@@ -234,5 +251,18 @@ public class AutomationUnitTest {
         }
 
         assertNotEquals(expectedCodeAbstractionAsAString, actualCodeAbstractionAsAString);
+    }
+
+    /**
+     * Requirement #: 7
+     */
+    @Test
+    public void UnexpectedBranchUsedNoFilesGeneratedTest() {
+        IAbstractionExtension ae = new MockAbstractionExtension();
+        IBranch branch = new GitBranch("unexpectedBranch", new GitCommit[]{});
+        ae.setBranch(branch);
+        String generatedFileName = ae.generateCodeAbstraction();
+
+        assertNull(generatedFileName);
     }
 }
