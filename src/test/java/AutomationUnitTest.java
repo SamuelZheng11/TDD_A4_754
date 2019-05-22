@@ -81,7 +81,7 @@ public class AutomationUnitTest {
         IBranch branch = new GitBranch("unexpectedBranch", new GitCommit[]{});
         List<String> results = cmd.runOnBranch(branch);
 
-        if (results.get(0) == "") {
+        if (results.size() == 0) {
             return;
         }
     }
