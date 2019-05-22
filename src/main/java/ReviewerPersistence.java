@@ -48,21 +48,21 @@ public class ReviewerPersistence {
         int reviewCount = -1;
         while (iterator.hasNext()) {
             Document document = iterator.next();
-            reviewCount = (int)document.get(REVIEW_COUNT_KEY);
+            reviewCount = (Integer)document.get(REVIEW_COUNT_KEY);
         }
         return reviewCount;
     }
 
 
     public List<User> getAllCodeReviewers() {
-        List<User> reviewers = new ArrayList<>();
+        List<User> reviewers = new ArrayList<User>();
         FindIterable<Document> documents = mongoCollection.find();
         MongoCursor<Document> iterator = documents.iterator();
         while (iterator.hasNext()) {
             Document document = iterator.next();
 
             String userName = (String)document.get(FIRST_NAME_KEY);
-            int reviewCount = (int)document.get(REVIEW_COUNT_KEY);
+            int reviewCount = (Integer)document.get(REVIEW_COUNT_KEY);
             UserType ut = (UserType)document.get(USERTYPE_KEY);
 
             if(ut == UserType.NonDeveloper) {

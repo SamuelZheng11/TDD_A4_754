@@ -57,37 +57,6 @@ public class CodeReviewAllocationTest {
 
     }
 
-    @Test
-    public void shouldInitializeMongoDBClientWhenCreatingMyCash() {
-
-        // Given
-        Mockito.doReturn(mongoDatabase).when(mongoClient).getDatabase(usersDBName);
-
-        MongoCollection<Document> collection = Mockito.mock(MongoCollection.class);
-        Mockito.doReturn(collection).when(mongoDatabase).getCollection(usersCollectionName);
-
-        FindIterable iterable = Mockito.mock(FindIterable.class);
-        MongoCursor cursor = Mockito.mock(MongoCursor.class);
-        Document bob = new Document("_id", new ObjectId("579397d20c2dd41b9a8a09eb")).append("firstName", "Bob").append("lastName", "Bobberson");
-
-        Mockito.when(collection.find(new Document("lastName", "Bobberson"))).thenReturn(iterable);
-        Mockito.when(iterable.iterator()).thenReturn(cursor);
-        Mockito.when(cursor.hasNext()).thenReturn(true).thenReturn(false);
-        Mockito.when(cursor.next()).thenReturn(bob);
-
-        List<Document> people = new ArrayList<>();
-        FindIterable<Document> documents = collection.find(new Document("lastName", "Bobberson"));
-        MongoCursor<Document> iterator = documents.iterator();
-        while (iterator.hasNext()) {
-            Document document = iterator.next();
-            people.add(document);
-        }
-
-
-        assertEquals(bob, people.get(0));
-
-    }
-
     /**
      * 8. The developer can add/delete one or more non-developer reviewers in this
      * tool. A database is used to store the reviewers’ information.
