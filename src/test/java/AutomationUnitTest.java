@@ -34,4 +34,23 @@ public class AutomationUnitTest {
 
         fail();
     }
+
+    /**
+     * Requirement #: 5
+     */
+    @Test
+    public void LinterFailsAndRequiresFurtherAssistanceTest() {
+        CommandLineRunner cmd = new CommandLineRunner();
+        cmd.setCommand("npm run lint");
+        IBranch branch = new GitBranch("linterRequiresFurtherAssistanceBranch", new GitCommit[]{});
+        List<String> results = cmd.runOnBranch(branch);
+
+        for (String result: results) {
+            if (result.equals("ERROR: app/misc/router.ts:116:1 - non-arrow functions are forbidden")) {
+                return;
+            }
+        }
+
+        fail();
+    }
 }
