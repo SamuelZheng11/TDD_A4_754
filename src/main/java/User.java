@@ -5,18 +5,23 @@ public class User {
         this.name = name;
     }
 
+    public User(String userName, UserType nonDeveloper, int reviewCount) {
+        this.name = userName;
+        this.reviewCount = reviewCount;
+    }
+
     public int getReviewCount() {
         return reviewCount;
     }
 
     public void incrementReviewCount() {
         reviewCount +=1;
-        ReviewerPersistence.getInstance().addReviewCount(this);
+        ReviewerPersistence.getInstance().updateReviewCount(this);
     }
 
     public void decrementReviewCount() {
         reviewCount -=1;
-        ReviewerPersistence.getInstance().addReviewCount(this);
+        ReviewerPersistence.getInstance().updateReviewCount(this);
     }
 
     public String getName(){

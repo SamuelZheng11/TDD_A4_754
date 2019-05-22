@@ -1,3 +1,5 @@
+import java.util.List;
+
 public class PullRequest {
 
     private boolean _completed = false;
@@ -18,12 +20,17 @@ public class PullRequest {
         return _completed;
     }
 
-    public void addCodeReview(CodeReview codeReview) {
+    public CodeReviewAllocation createCodeReview(User requester, User codeReviewer){
+        return null;
+    }
+
+
+    public void addCodeReview(CodeReviewAllocation codeReviewAllocation) {
     }
 
     public void removeCodeReviwer(User developer, User nonDeveloper) {
     }
 
-    public void randomAllocateReviewer() {
-    }
+    public List<User> getCodeReviewers(){return null;};
+    
 }
