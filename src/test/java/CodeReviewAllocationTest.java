@@ -120,7 +120,7 @@ public class CodeReviewAllocationTest {
     @Test
     public void TestDeveloperCanAddCodeReviewer() {
         //Given
-        PullRequest mockPullRequest = Mockito.spy(_github.createPullRequest("Test add code reviewers", sourceBranch, targetBranch));
+        PullRequest mockPullRequest = Mockito.spy(_github.createPullRequest("Test developer can add code reviewers", sourceBranch, targetBranch));
         int initialReviewCount = nonDeveloper.getReviewCount();
 
         //When
@@ -141,7 +141,7 @@ public class CodeReviewAllocationTest {
     public void TestDeveloperCanRemoveCodeReviewer() {
 
         //Given
-        PullRequest mockPullRequest = Mockito.spy(_github.createPullRequest("Test remove code reviewers", sourceBranch, targetBranch));
+        PullRequest mockPullRequest = Mockito.spy(_github.createPullRequest("Test developer can remove code reviewers", sourceBranch, targetBranch));
         int initialReviewCount = nonDeveloper.getReviewCount();
 
         CodeReviewAllocation codeReviewAllocation = mockPullRequest.createCodeReview(developer, nonDeveloper);
@@ -235,7 +235,7 @@ public class CodeReviewAllocationTest {
     @Test
     public void TestDeveloperCanAddMultipleCodeReviewers() {
         //Given
-        PullRequest mockPullRequest = Mockito.spy(_github.createPullRequest("Test add code reviewers", sourceBranch, targetBranch));
+        PullRequest mockPullRequest = Mockito.spy(_github.createPullRequest("Test developer can add multiple code reviewers", sourceBranch, targetBranch));
 
         mockDatabaseBehaviourWhenGetAllCodeReviewersIsCalled();
         List<User> allUsers = spiedRPInstance.getAllCodeReviewers();
