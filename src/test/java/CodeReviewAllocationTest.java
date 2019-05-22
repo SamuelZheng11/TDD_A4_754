@@ -120,7 +120,7 @@ public class CodeReviewAllocationTest {
     @Test
     public void TestDeveloperCanAddCodeReviewer() {
         //Given
-        PullRequest mockPullRequest = Mockito.spy(_github.createPullRequest("Test add code reviewers", sourceBranch, targetBranch));
+        PullRequest mockPullRequest = Mockito.spy(_github.createPullRequest("Test developer can add code reviewers", sourceBranch, targetBranch));
         int initialReviewCount = nonDeveloper.getReviewCount();
 
         //When
@@ -141,7 +141,7 @@ public class CodeReviewAllocationTest {
     public void TestDeveloperCanRemoveCodeReviewer() {
 
         //Given
-        PullRequest mockPullRequest = Mockito.spy(_github.createPullRequest("Test remove code reviewers", sourceBranch, targetBranch));
+        PullRequest mockPullRequest = Mockito.spy(_github.createPullRequest("Test developer can remove code reviewers", sourceBranch, targetBranch));
         int initialReviewCount = nonDeveloper.getReviewCount();
 
         CodeReviewAllocation codeReviewAllocation = mockPullRequest.createCodeReview(developer, nonDeveloper);
@@ -226,5 +226,78 @@ public class CodeReviewAllocationTest {
 
         Mockito.verify(spiedRPInstance, times(1)).updateReviewCount(codeReviewer);
         Mockito.verify(mockPullRequest, times(1)).addCodeReview(codeReviewAllocation);
+    }
+
+    /**
+     * 8. The developer can add/delete one or more non-developer reviewers in this
+     * tool. A database is used to store the reviewers’ information.
+     */
+    @Test
+    public void TestDeveloperCanAddMultipleCodeReviewers() {
+        //Given
+        PullRequest mockPullRequest = Mockito.spy(_github.createPullRequest("Test developer can add multiple code reviewers", sourceBranch, targetBranch));
+
+        mockDatabaseBehaviourWhenGetAllCodeReviewersIsCalled();
+        List<User> allUsers = spiedRPInstance.getAllCodeReviewers();
+        Map<User, Integer> userReviewCountMap = new HashMap<User, Integer>();
+        //getting all review counts of all users
+        for(User u : allUsers){
+            userReviewCountMap.put(u, u.getReviewCount());
+            mockDatabaseBehaviourWhenAddReviewCountIsCalled(u);
+        }
+
+        List<User> allCodeReviewers = spiedRPInstance.getAllCodeReviewers();
+
+        //When
+        List<CodeReviewAllocation> codeReviewAllocations = mockPullRequest.createCodeReview(developer, allCodeReviewers);
+
+        //Then
+        List<User> codeReviewers = mockPullRequest.getCodeReviewers();
+        assertTrue(codeReviewers.containsAll(allCodeReviewers));
+        for(User u: userReviewCountMap.keySet()) {
+            assertEquals(userReviewCountMap.get(u) + 1, u.getReviewCount());
+        }
+
+        for(User u : allUsers){
+            Mockito.verify(spiedRPInstance, times(1)).updateReviewCount(u);
+            Mockito.verify(mockPullRequest, times(1)).createCodeReview(developer, u);
+        }
+    }
+
+    @Test
+    public void TestDeveloperCanRemoveMultipleCodeReviewers() {
+        //Given
+        PullRequest mockPullRequest = Mockito.spy(_github.createPullRequest("Test developer can remove multiple code reviewers", sourceBranch, targetBranch));
+
+        mockDatabaseBehaviourWhenGetAllCodeReviewersIsCalled();
+        List<User> allUsers = spiedRPInstance.getAllCodeReviewers();
+        Map<User, Integer> userReviewCountMap = new HashMap<User, Integer>();
+        //getting all review counts of all users
+        for(User u : allUsers){
+            userReviewCountMap.put(u, u.getReviewCount());
+            mockDatabaseBehaviourWhenAddReviewCountIsCalled(u);
+        }
+
+        List<User> allCodeReviewers = spiedRPInstance.getAllCodeReviewers();
+
+        //When
+        List<CodeReviewAllocation> codeReviewAllocations = mockPullRequest.createCodeReview(developer, allCodeReviewers);
+
+        //Then
+        List<User> codeReviewers = mockPullRequest.getCodeReviewers();
+        assertTrue(codeReviewers.containsAll(allCodeReviewers));
+        for(User u: userReviewCountMap.keySet()) {
+            assertEquals(userReviewCountMap.get(u) + 1, u.getReviewCount());
+        }
+
+        mockPullRequest.removeCodeReviwer(developer, allCodeReviewers);
+        List<User> prCodeReviewers = mockPullRequest.getCodeReviewers();
+        for(User u : allUsers){
+            assertFalse(prCodeReviewers.contains(u));
+            assertEquals((int)userReviewCountMap.get(u),u.getReviewCount());
+            Mockito.verify(spiedRPInstance, times(2)).updateReviewCount(u);
+            Mockito.verify(mockPullRequest, times(1)).createCodeReview(developer, u);
+            Mockito.verify(mockPullRequest, times(1)).removeCodeReviwer(developer, u);
+        }
     }
 }
