@@ -69,6 +69,26 @@ public class GithubUnitTest {
         assertTrue(commits.contains(commit));
     }
 
+    //Requirement (3)
+    @Test
+    public void GithubAutomaticMergeOnApprovalTest() {
+        //Given
+        String pullRequestTitle = "GithubPullRequestFetchTest_Branch";
+        commit = new GitCommit("Commit Message", "GithubPullRequestFetchTest_Commit");
+        committed_code = new GitCommit[]{commit};
+        sourceBranch = new GitBranch(sourceBranchName, committed_code);
+        targetBranch = new GitBranch(targetBranchName, null);
+        PullRequest pr = _github.createPullRequest(pullRequestTitle, sourceBranch, targetBranch);
+        _github.signOut(developer);
+        _github.signIn("Other Developer", "password");
+        //When
+        _github.approvePullRequest(pr);
+        //Assert
+        List<GitCommit> commits = _github.getCommits(targetBranchName);
+        assertTrue(commits.contains(commit));
+        assertTrue(_github.getPullRequest(pullRequestTitle).isCompleted());
+    }
+
 
     //Requirement(4)
     @Test
