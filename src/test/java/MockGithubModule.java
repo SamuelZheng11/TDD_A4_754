@@ -14,8 +14,12 @@ public class MockGithubModule implements GithubApi{
         return null;
     }
 
-    public void signOut() {
+    public void signOut(User user) {
         _currentUser = null;
+    }
+
+    public boolean isSignedIn(User user) {
+        return (user.equals(_currentUser));
     }
 
     public PullRequest createPullRequest(String title, GitBranch head, GitBranch target) {
