@@ -27,15 +27,13 @@ public class CodeReviewAllocation {
     public User randomAllocateReviewer() {
         Random rand = new Random();
         List<User> allCodeReviewers = ReviewerPersistence.getInstance().getAllCodeReviewers();
-        Map<User, Integer> reviewChanceMap = new LinkedHashMap<>();
+        Map<User, Integer> reviewChanceMap = new LinkedHashMap<User, Integer>();
         int chance = 0;
         double totalReviewCount = 0;
         for (User cr: allCodeReviewers){
             totalReviewCount += cr.getReviewCount();
         }
-        if(totalReviewCount == 0){
-            totalReviewCount = allCodeReviewers.size();
-        }
+
         for (User cr: allCodeReviewers){
             if (cr.getReviewCount()==0){
                 chance += totalReviewCount;
