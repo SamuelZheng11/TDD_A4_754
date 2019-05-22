@@ -27,5 +27,8 @@ public class PullRequest {
     }
 
     public List<User> getCodeReviewers(){return null;};
-    
+
+    public List<CodeReviewAllocation> createCodeReview(User requester, List<User> codeReviewers){
+        return null;
+    }
 }
