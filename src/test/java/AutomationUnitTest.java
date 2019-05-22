@@ -75,7 +75,7 @@ public class AutomationUnitTest {
      * Requirement #: 5
      */
     @Test
-    public void linterAttemptsToFixAnUnexpectedBranchTest() {
+    public void linterAttemptsToLintAnUnexpectedBranchTest() {
         CommandLineRunner cmd = new CommandLineRunner();
         cmd.setCommand("npm run lint");
         IBranch branch = new GitBranch("unexpectedBranch", new GitCommit[]{});
