@@ -10,10 +10,6 @@ public class User {
         this.reviewCount = reviewCount;
     }
 
-    public boolean isSignedIn(){
-        return true;
-    }
-
     public int getReviewCount() {
         return reviewCount;
     }
@@ -31,4 +27,5 @@ public class User {
     public String getName(){
         return name;
     }
+
 }

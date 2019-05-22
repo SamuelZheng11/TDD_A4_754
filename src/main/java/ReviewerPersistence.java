@@ -20,7 +20,7 @@ public class ReviewerPersistence {
     final static String REVIEW_COUNT_KEY = "REVIEW_COUNT";
     final static String USERTYPE_KEY = "USERTYPE";
 
-    private List<User> reviewers = new ArrayList<>();
+    private List<User> reviewers = new ArrayList<User>();
 
 
     private static ReviewerPersistence instance;
@@ -51,11 +51,10 @@ public class ReviewerPersistence {
         int reviewCount = -1;
         while (iterator.hasNext()) {
             Document document = iterator.next();
-            reviewCount = (int)document.get(REVIEW_COUNT_KEY);
+            reviewCount = (Integer)document.get(REVIEW_COUNT_KEY);
         }
         return reviewCount;
     }
-
 
     public List<User> getAllCodeReviewers() {
         if(reviewers.size()==0) {
@@ -65,7 +64,7 @@ public class ReviewerPersistence {
                 Document document = iterator.next();
 
                 String userName = (String) document.get(FIRST_NAME_KEY);
-                int reviewCount = (int) document.get(REVIEW_COUNT_KEY);
+                int reviewCount = (Integer) document.get(REVIEW_COUNT_KEY);
                 UserType ut = (UserType) document.get(USERTYPE_KEY);
 
                 if (ut == UserType.NonDeveloper) {
@@ -76,6 +75,5 @@ public class ReviewerPersistence {
         }
         return reviewers;
     }
-
 
 }
