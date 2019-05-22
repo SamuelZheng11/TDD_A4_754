@@ -291,10 +291,13 @@ public class CodeReviewAllocationTest {
         }
 
         mockPullRequest.removeCodeReviwer(developer, allCodeReviewers);
-
+        List<User> prCodeReviewers = mockPullRequest.getCodeReviewers();
         for(User u : allUsers){
-            Mockito.verify(spiedRPInstance, times(1)).updateReviewCount(u);
+            assertFalse(prCodeReviewers.contains(u));
+            assertEquals((int)userReviewCountMap.get(u),u.getReviewCount());
+            Mockito.verify(spiedRPInstance, times(2)).updateReviewCount(u);
             Mockito.verify(mockPullRequest, times(1)).createCodeReview(developer, u);
+            Mockito.verify(mockPullRequest, times(1)).removeCodeReviwer(developer, u);
         }
     }
 }

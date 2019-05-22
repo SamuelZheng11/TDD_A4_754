@@ -54,4 +54,9 @@ public class MockPullRequest extends PullRequest {
         }
     }
 
+    public void removeCodeReviwer(User developer, List<User> codeReviewers) {
+        for (User u: codeReviewers){
+            removeCodeReviwer(developer, u);
+        }
+    }
 }
