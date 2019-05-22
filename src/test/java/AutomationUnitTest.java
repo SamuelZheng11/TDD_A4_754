@@ -89,4 +89,23 @@ public class AutomationUnitTest {
 
         return;
     }
+    
+    /**
+     * Requirement #: 6
+     */
+    @Test
+    public void AutomatedCodeInspectionFailSmallDefectsTest() {
+        IBranch branch = new GitBranch("failSmallDefectsMLCheckBranch", new GitCommit[]{});
+        MachineLearningModelHandler mlmp = new MachineLearningModelHandler();
+
+        Map<List<Integer>, AnomalyType> anomalyTypeMap = mlmp.identifyAnomalyLines(branch);
+
+        for (List<Integer> lineNumberSet: anomalyTypeMap.keySet()) {
+            if (anomalyTypeMap.get(lineNumberSet) == AnomalyType.SmallDefect) {
+                return;
+            }
+        }
+
+        fail();
+    }
 }
