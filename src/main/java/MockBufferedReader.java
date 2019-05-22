@@ -3,12 +3,15 @@ import java.util.LinkedList;
 public class MockBufferedReader implements IBufferedReader {
     private int type;
     private LinkedList<String> inputStreamNoError = new LinkedList<String>();
+    private LinkedList<String> inputStreamErrorRequiresFurtherHelp = new LinkedList<String>();
 
     public MockBufferedReader(int type) {
         // typed used to represent if this is an input or error buffer reader
         this.type = type;
 
         inputStreamNoError.add("Linter completed with no linting errors");
+
+        inputStreamErrorRequiresFurtherHelp.add("ERROR: app/misc/router.ts:116:1 - non-arrow functions are forbidden");
     }
 
     public String readLine() {
@@ -16,6 +19,15 @@ public class MockBufferedReader implements IBufferedReader {
             if (inputStreamNoError.size() != 0) {
                 String returnValue = inputStreamNoError.getFirst();
                 inputStreamNoError.removeFirst();
+                return returnValue;
+            } else {
+                return null;
+            }
+
+        } else if (type == 1) {
+            if (inputStreamErrorRequiresFurtherHelp.size() != 0) {
+                String returnValue = inputStreamErrorRequiresFurtherHelp.getFirst();
+                inputStreamErrorRequiresFurtherHelp.removeFirst();
                 return returnValue;
             } else {
                 return null;
