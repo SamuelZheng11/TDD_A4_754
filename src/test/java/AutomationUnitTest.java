@@ -127,4 +127,23 @@ public class AutomationUnitTest {
 
         fail();
     }
+
+    /**
+     * Requirement #: 6
+     */
+    @Test
+    public void AutomatedCodeInspectionFailBadCodeSmellsTest() {
+        IBranch branch = new GitBranch("failBadCodeSmellsMLCheckBranch", new GitCommit[]{});
+        MachineLearningModelHandler mlmp = new MachineLearningModelHandler();
+
+        Map<List<Integer>, AnomalyType> anomalyTypeMap = mlmp.identifyAnomalyLines(branch);
+
+        for (List<Integer> lineNumberSet: anomalyTypeMap.keySet()) {
+            if (anomalyTypeMap.get(lineNumberSet) == AnomalyType.BadCodeSmell) {
+                return;
+            }
+        }
+
+        fail();
+    }
 }
