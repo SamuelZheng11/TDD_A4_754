@@ -151,7 +151,7 @@ public class AutomationUnitTest {
      * Requirement #: 7
      */
     @Test
-    public void TestGenerateCodeAbstractionPassTest() {
+    public void TestSuccessfulGenerateCodeAbstractionsTest() {
         IAbstractionExtension ae = new MockAbstractionExtension();
         IBranch branch = new GitBranch("passCodeAbstractionGenerationBranch", new GitCommit[]{});
         ae.setBranch(branch);
