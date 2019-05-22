@@ -27,7 +27,8 @@ public class GithubUnitTest {
 
     private GithubApi _github;
 
-    @Before public void initialize(){
+    @Before
+    public void initialize(){
         _github = new MockGithubModule(this);
         _github.signIn(username, password);
     }
