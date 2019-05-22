@@ -17,6 +17,8 @@ public class MockMachineLearningModel implements IMachineLearningModel {
 
             if (branchName == "failSmallDefectsMLCheckBranch") {
                 anomalies.put(anomolyLineNumbers, AnomalyType.SmallDefect);
+            } else if (branchName == "failMaliciousCodeBlocksMLCheckBranch") {
+                anomalies.put(anomolyLineNumbers, AnomalyType.MaliciousCodeBlock);
             }
         }
     }
