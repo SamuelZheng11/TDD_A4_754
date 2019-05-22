@@ -159,6 +159,23 @@ public class AutomationUnitTest {
     }
 
     /**
+     * Requirement #: 6
+     */
+    @Test
+    public void AutomatedCodeInspectionIsAppliedToUnexpectedBranchTest() {
+        IBranch branch = new GitBranch("unexpectedBranch", new GitCommit[]{});
+        MachineLearningModelHandler mlmp = new MachineLearningModelHandler();
+
+        Map<List<Integer>, AnomalyType> anomalyTypeMap = mlmp.identifyAnomalyLines(branch);
+
+        if (anomalyTypeMap.size() != 0) {
+            fail();
+        }
+
+        return;
+    }
+
+    /**
      * Requirement #: 7
      */
     @Test
