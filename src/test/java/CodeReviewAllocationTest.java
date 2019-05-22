@@ -1,20 +1,31 @@
+import com.mongodb.client.FindIterable;
+import com.mongodb.client.MongoCursor;
+import org.bson.types.ObjectId;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import static com.mongodb.client.model.Filters.eq;
 import static junit.framework.TestCase.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import com.mongodb.MongoClient;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+
+import org.mockito.Mockito;
+import org.bson.Document;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 public class CodeReviewAllocationTest {
     public String sourceBranchName = "GithubPullRequestFetchTest_Branch";
     public String targetBranchName = "GithubPullRequestFetchTest_TargetBranch";
 
     public User developer = new User("", UserType.Developer);
-    public User nonDeveloper = new User("", UserType.NonDeveloper);
+    public User nonDeveloper = new User("codeReviewer", UserType.NonDeveloper);
 
     public GitCommit commit = new GitCommit("Commit Message", "GithubPullRequestFetchTest_Commit");
     public GitCommit[] committed_code = {commit};
@@ -23,9 +34,27 @@ public class CodeReviewAllocationTest {
 
     private GithubApi _github;
 
+    MongoClient mongoClient;
+    String usersDBName;
+    String usersCollectionName;
+    MongoDatabase mongoDatabase;
+    MongoCollection<Document> collection;
+
     @Before
     public void initialize(){
         _github = new MockGithubModule();
+        // Given
+        mongoClient = Mockito.mock(MongoClient.class);
+        usersDBName = "users-db";
+        usersCollectionName = "user-collection";
+
+        mongoDatabase =  Mockito.mock(MongoDatabase.class);
+        Mockito.doReturn(mongoDatabase).when(mongoClient).getDatabase(usersDBName);
+
+        collection = Mockito.mock(MongoCollection.class);
+        Mockito.doReturn(collection).when(mongoDatabase).getCollection(usersCollectionName);
+        ReviewerPersistence.getInstance().addDatabase(mongoClient, usersDBName, usersCollectionName);
+
     }
 
     /**
@@ -36,25 +65,63 @@ public class CodeReviewAllocationTest {
     public void TestDeveloperCanAddCodeReviewer() {
         //Given
         PullRequest pullRequest = _github.createPullRequest("Test add code reviewers", sourceBranch, targetBranch);
+        int initialReviewCount = nonDeveloper.getReviewCount();
+
         //When
         CodeReview codeReview = new CodeReview(pullRequest, developer, nonDeveloper);
-        //Assert
+
+        FindIterable iterable = Mockito.mock(FindIterable.class);
+        MongoCursor cursor = Mockito.mock(MongoCursor.class);
+        Document nonDeveloperDocument = Mockito.mock(Document.class);
+
+        //Use Mock tool to mock database behaviour
+        Mockito.when(collection.find(new Document(ReviewerPersistence.FIRST_NAME_KEY, nonDeveloper.getName()))).thenReturn(iterable);
+        Mockito.when(iterable.iterator()).thenReturn(cursor);
+        Mockito.when(cursor.hasNext()).thenReturn(true).thenReturn(false);
+        Mockito.when(cursor.next()).thenReturn(nonDeveloperDocument);
+        Mockito.when(nonDeveloperDocument.get(ReviewerPersistence.REVIEW_COUNT_KEY)).thenReturn(nonDeveloper.getReviewCount());
+
+        //Then
         List<User> codeReviewers = _github.getCodeReviewers(pullRequest);
         assertTrue(codeReviewers.contains(nonDeveloper));
+
+        assertEquals(initialReviewCount+1,nonDeveloper.getReviewCount());
+
+        int databaseReviewCount = ReviewerPersistence.getInstance().getReviewCountForUser(nonDeveloper);
+        assertEquals(nonDeveloper.getReviewCount(), databaseReviewCount);
+
     }
 
     @Test
     public void TestDeveloperCanRemoveCodeReviewer() {
+
         //Given
         PullRequest pullRequest = _github.createPullRequest("Test remove code reviewers", sourceBranch, targetBranch);
-        //When
+        int initialReviewCount = nonDeveloper.getReviewCount();
         CodeReview codeReview = new CodeReview(pullRequest, developer, nonDeveloper);
-        List<User> codeReviewers = _github.getCodeReviewers(pullRequest);
-        assertTrue(codeReviewers.contains(nonDeveloper));
-        //Assert
+
+        FindIterable iterable = Mockito.mock(FindIterable.class);
+        MongoCursor cursor = Mockito.mock(MongoCursor.class);
+        Document nonDeveloperDocument = Mockito.mock(Document.class);
+
+        //Use Mock tool to mock database behaviour
+        Mockito.when(collection.find(new Document(ReviewerPersistence.FIRST_NAME_KEY, nonDeveloper.getName()))).thenReturn(iterable);
+        Mockito.when(iterable.iterator()).thenReturn(cursor);
+        Mockito.when(cursor.hasNext()).thenReturn(true).thenReturn(false);
+        Mockito.when(cursor.next()).thenReturn(nonDeveloperDocument);
+        Mockito.when(nonDeveloperDocument.get(ReviewerPersistence.REVIEW_COUNT_KEY)).thenReturn(nonDeveloper.getReviewCount());
+
+        //check that the database is initially correct
+        int databaseReviewCount = ReviewerPersistence.getInstance().getReviewCountForUser(nonDeveloper);
+        assertEquals(nonDeveloper.getReviewCount(), databaseReviewCount);
+
+        //When
         pullRequest.removeCodeReviwer(developer, nonDeveloper);
-        codeReviewers = _github.getCodeReviewers(pullRequest);
+
+        //Then
+        List<User> codeReviewers = _github.getCodeReviewers(pullRequest);
         assertFalse(codeReviewers.contains(nonDeveloper));
+        assertEquals(initialReviewCount,nonDeveloper.getReviewCount());
     }
 
     /**
@@ -82,7 +149,7 @@ public class CodeReviewAllocationTest {
     @Test
     public void TestUserCodeReviewIncreases() {
         //Given
-        List<User> allUsers = DatabaseManager.getInstance().getAllUsers();
+        List<User> allUsers = MockDatabasePersistence.getInstance().getAllCodeReviewers();
         Map<User, Integer> userReviewCountMap = new HashMap<User, Integer>();
         //getting all review counts of all users
         for(User u : allUsers){

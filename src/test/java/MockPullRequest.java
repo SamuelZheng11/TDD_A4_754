@@ -33,6 +33,7 @@ public class MockPullRequest extends PullRequest {
         for (CodeReview cr: codeReviews){
             if (cr.getCodeReviewer().equals(nonDeveloper)){
                 codeReviews.remove(cr);
+                cr.getCodeReviewer().decrementReviewCount();
                 return;
             }
         }
@@ -40,8 +41,8 @@ public class MockPullRequest extends PullRequest {
 
     public void randomAllocateReviewer() {
         Random rand = new Random();
-        DatabaseManager instance = DatabaseManager.getInstance();
-        List<User> allUsers = instance.getAllUsers();
+        MockDatabasePersistence instance = MockDatabasePersistence.getInstance();
+        List<User> allUsers = instance.getAllCodeReviewers();
         User codeReviewer = allUsers.get(rand.nextInt(allUsers.size()));
         new CodeReview(this, null, codeReviewer);
     }
