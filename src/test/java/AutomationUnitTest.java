@@ -39,7 +39,7 @@ public class AutomationUnitTest {
      * Requirement #: 5
      */
     @Test
-    public void lintAutoFixTest() {
+    public void linterAutomaticallyFixesErorrsTest() {
         CommandLineRunner cmd = new CommandLineRunner();
         cmd.setCommand("npm run lint");
         IBranch branch = new GitBranch("lintAutoFixBranch", new GitCommit[]{});
@@ -66,6 +66,80 @@ public class AutomationUnitTest {
 
         for (String result: results) {
             if (result.equals("ERROR: app/misc/router.ts:116:1 - non-arrow functions are forbidden")) {
+                return;
+            }
+        }
+
+        fail();
+    }
+
+    /**
+     * Requirement #: 6
+     */
+    @Test
+    public void AutomatedCodeInspectionBadCodeDetectedTest() {
+        IBranch branch = new GitBranch("allPassMLCheckBranch", new GitCommit[]{});
+        MachineLearningModelHandler mlmp = new MachineLearningModelHandler();
+
+        Map<List<Integer>, AnomalyType> anomalyTypeMap = mlmp.identifyAnomalyLines(branch);
+
+        if (anomalyTypeMap.size() != 0) {
+            fail();
+        }
+
+        return;
+    }
+
+    /**
+     * Requirement #: 6
+     */
+    @Test
+    public void AutomatedCodeInspectionFailSmallDefectsTest() {
+        IBranch branch = new GitBranch("failSmallDefectsMLCheckBranch", new GitCommit[]{});
+        MachineLearningModelHandler mlmp = new MachineLearningModelHandler();
+
+        Map<List<Integer>, AnomalyType> anomalyTypeMap = mlmp.identifyAnomalyLines(branch);
+
+        for (List<Integer> lineNumberSet: anomalyTypeMap.keySet()) {
+            if (anomalyTypeMap.get(lineNumberSet) == AnomalyType.SmallDefect) {
+                return;
+            }
+        }
+
+        fail();
+    }
+
+    /**
+     * Requirement #: 6
+     */
+    @Test
+    public void AutomatedCodeInspectionFailMaliciousCodeBlocksTest() {
+        IBranch branch = new GitBranch("failMaliciousCodeBlocksMLCheckBranch", new GitCommit[]{});
+        MachineLearningModelHandler mlmp = new MachineLearningModelHandler();
+
+        Map<List<Integer>, AnomalyType> anomalyTypeMap = mlmp.identifyAnomalyLines(branch);
+
+        for (List<Integer> lineNumberSet: anomalyTypeMap.keySet()) {
+            if (anomalyTypeMap.get(lineNumberSet) == AnomalyType.MaliciousCodeBlock) {
+                return;
+            }
+        }
+
+        fail();
+    }
+
+    /**
+     * Requirement #: 6
+     */
+    @Test
+    public void AutomatedCodeInspectionFailBadCodeSmellsTest() {
+        IBranch branch = new GitBranch("failBadCodeSmellsMLCheckBranch", new GitCommit[]{});
+        MachineLearningModelHandler mlmp = new MachineLearningModelHandler();
+
+        Map<List<Integer>, AnomalyType> anomalyTypeMap = mlmp.identifyAnomalyLines(branch);
+
+        for (List<Integer> lineNumberSet: anomalyTypeMap.keySet()) {
+            if (anomalyTypeMap.get(lineNumberSet) == AnomalyType.BadCodeSmell) {
                 return;
             }
         }
