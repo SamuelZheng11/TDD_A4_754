@@ -37,7 +37,9 @@ public class MockGithubModule implements GithubApi{
     }
 
     public List<GitCommit> getCommits(String branchName) {
-        return null;
+        ArrayList<GitCommit> list = new ArrayList<GitCommit>();
+        list.add(testvalues.commit);
+        return list;
     }
 
     public void approvePullRequest(String branchName) {
