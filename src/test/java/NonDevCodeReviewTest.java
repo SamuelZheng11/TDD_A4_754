@@ -61,5 +61,23 @@ public class NonDevCodeReviewTest {
 		assertEquals(MessageOnConnection,checkMessage);
 				
 	}
+	@Test
+	public void InitialReview_Send_ChosenReviewer()
+	{
+		String[] resultreview_sent = {"good work on abstraction","better variable names","use 4 spaces in code"};
+		
+		Mockito.when(Developer_Side_Tool.ReviewResults()).thenReturn(resultreview_sent);
+		
+		String MessageOnSent="Data via Network";
+		Mockito.when(Network_Interface.ReviewSent(nonDevReviewer,resultreview)).thenReturn("good work on abstraction","better variable names","use 4 spaces in code");
+		
+		Mockito.when(Network_Interface.ReviewRecieved().thenReturn(Array.asList("good work on abstraction","better variable names","use 4 spaces in code")
+		String[] resultreview_recieve = nonDevReviewer.ReviewerResult_recieve();
+		assertArrayEquals(resultreview_sent,resultreview_recieve);
+		
+		
 
+		
+		
+	}
 }
