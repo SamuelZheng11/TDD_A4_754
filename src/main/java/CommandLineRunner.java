@@ -5,7 +5,7 @@ import java.util.List;
 public class CommandLineRunner {
 
     private String commands = "";
-    private List<String> cliOutput = new ArrayList<>();
+    private List<String> cliOutput = new ArrayList<String>();
 
     public void setCommand(String command) {
         commands += command;
