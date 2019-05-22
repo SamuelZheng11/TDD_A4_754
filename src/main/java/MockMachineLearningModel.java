@@ -11,6 +11,13 @@ public class MockMachineLearningModel implements IMachineLearningModel {
     public void runModelOnBranch() {
         if (branchName == "allPassMLCheckBranch") {
             return;
+        } else {
+
+            List<Integer> anomolyLineNumbers = Arrays.asList(new Integer[]{1, 2, 3});
+
+            if (branchName == "failSmallDefectsMLCheckBranch") {
+                anomalies.put(anomolyLineNumbers, AnomalyType.SmallDefect);
+            }
         }
     }
 

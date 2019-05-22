@@ -89,7 +89,7 @@ public class AutomationUnitTest {
 
         return;
     }
-    
+
     /**
      * Requirement #: 6
      */
