@@ -16,5 +16,7 @@ public interface GithubApi {
 
     List<GitCommit> getCommits(String branchName);
 
+    public List<User> getCodeReviewers(PullRequest pullRequest);
+
     boolean approvePullRequest(PullRequest pr);
 }

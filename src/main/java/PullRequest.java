@@ -17,4 +17,10 @@ public class PullRequest {
     public boolean isCompleted() {
         return _completed;
     }
+
+    public void addCodeReview(CodeReview codeReview) {
+    }
+
+    public void removeCodeReviwer(User developer, User nonDeveloper) {
+    }
 }

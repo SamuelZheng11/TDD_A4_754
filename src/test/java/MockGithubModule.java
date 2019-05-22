@@ -8,6 +8,8 @@ public class MockGithubModule implements GithubApi{
     private MockPullRequest mockPR;
     private PullRequest storedPullRequest = null;
 
+    public MockGithubModule(){}
+
     public MockGithubModule(GithubUnitTest suite){
         testvalues =  suite;
     }
@@ -52,6 +54,13 @@ public class MockGithubModule implements GithubApi{
     public List<GitComment> getPullRequestComments(PullRequest pullRequest) {
         if (pullRequest == mockPR){
             return mockPR.getCommentsPosted();
+        }
+        return null;
+    }
+
+    public List<User> getCodeReviewers(PullRequest pullRequest) {
+        if (pullRequest == mockPR){
+            return mockPR.getCodeReviewers();
         }
         return null;
     }
