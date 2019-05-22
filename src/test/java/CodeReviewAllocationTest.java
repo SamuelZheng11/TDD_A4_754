@@ -227,4 +227,42 @@ public class CodeReviewAllocationTest {
         Mockito.verify(spiedRPInstance, times(1)).updateReviewCount(codeReviewer);
         Mockito.verify(mockPullRequest, times(1)).addCodeReview(codeReviewAllocation);
     }
+
+    /**
+     * 8. The developer can add/delete one or more non-developer reviewers in this
+     * tool. A database is used to store the reviewers’ information.
+     */
+    @Test
+    public void TestDeveloperCanAddMultipleCodeReviewers() {
+        //Given
+        PullRequest mockPullRequest = Mockito.spy(_github.createPullRequest("Test add code reviewers", sourceBranch, targetBranch));
+
+        mockDatabaseBehaviourWhenGetAllCodeReviewersIsCalled();
+        List<User> allUsers = spiedRPInstance.getAllCodeReviewers();
+        Map<User, Integer> userReviewCountMap = new HashMap<>();
+        //getting all review counts of all users
+        for(User u : allUsers){
+            userReviewCountMap.put(u, u.getReviewCount());
+            mockDatabaseBehaviourWhenAddReviewCountIsCalled(u);
+        }
+
+        List<User> allCodeReviewers = spiedRPInstance.getAllCodeReviewers();
+
+        //When
+        List<CodeReviewAllocation> codeReviewAllocations = mockPullRequest.createCodeReview(developer, allCodeReviewers);
+
+        //Then
+        List<User> codeReviewers = mockPullRequest.getCodeReviewers();
+        assertTrue(codeReviewers.containsAll(allCodeReviewers));
+        for(User u: userReviewCountMap.keySet()) {
+            assertEquals(userReviewCountMap.get(u) + 1, u.getReviewCount());
+        }
+
+        for(User u : allUsers){
+            Mockito.verify(spiedRPInstance, times(1)).updateReviewCount(u);
+            Mockito.verify(mockPullRequest, times(1)).createCodeReview(developer, u);
+        }
+    }
+
+
 }
