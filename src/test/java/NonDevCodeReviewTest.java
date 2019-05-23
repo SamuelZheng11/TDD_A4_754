@@ -20,16 +20,21 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertTrue;
 
 public class NonDevCodeReviewTest {
-
-	private Developer_Side_Tool developer_side_tool;;
-	private Network_Interface network_interface;
-	//Requirement 11
 	
+	
+	private Developer_Side_Tool developer_side_tool= new Developer_Side_Tool();
+	private Network_Interface network_interface;
+	
+	
+
+	@Before
+	public void Setup() {	 
+	developer_side_tool= mock(Developer_Side_Tool.class);
+	network_interface=mock(Network_Interface.class);
+	}
+	//Requirement 11
 	@Test
-	public void test_establish_network_connection_success() {
-		developer_side_tool= mock(Developer_Side_Tool.class);
-		network_interface=mock(Network_Interface.class);
-				
+	public void test_establish_network_connection_success() {			
 		
 		//given
 		String MessageOnConnection="Network Connection Successful";
@@ -62,22 +67,26 @@ public class NonDevCodeReviewTest {
 				
 	}
 	@Test
-	public void InitialReview_Send_ChosenReviewer()
+	public void Test_InitialReview_viaNetwork()
 	{
-		String[] resultreview_sent = {"good work on abstraction","better variable names","use 4 spaces in code"};
 		
-		Mockito.when(Developer_Side_Tool.ReviewResults()).thenReturn(resultreview_sent);
+		//given 
+		String resultreview_sent = new String("please add better variable names");
+		Mockito.when(DeveloperSideTtool.ReviewResults()).thenReturn(resultreview_sent);
 		
-		String MessageOnSent="Data via Network";
-		Mockito.when(Network_Interface.ReviewSent(nonDevReviewer,resultreview)).thenReturn("good work on abstraction","better variable names","use 4 spaces in code");
+		String MessageOnSent= new String("Sent via Network");
+		Mockito.when(NetworkInterface.ReviewSent(reviewer,resultreview_sent)).thenReturn(MessageOnSent);
 		
-		Mockito.when(Network_Interface.ReviewRecieved().thenReturn(Array.asList("good work on abstraction","better variable names","use 4 spaces in code")
-		String[] resultreview_recieve = nonDevReviewer.ReviewerResult_recieve();
-		assertArrayEquals(resultreview_sent,resultreview_recieve);
+		//when
+		Mockito.when(NetworkInterface.ReviewRecieved()).thenReturn("please add better variable names");
 		
-		
-
-		
-		
+		//then
+		Mockito.when(reviewer.Abstract_recieve()).thenReturn("please add better variable names");
+		String resultreview_recieve = reviewer.AbstractResult_recieve();
+		assertEquals(resultreview_sent,resultreview_recieve);
+				
 	}
+	
+		
+	
 }
