@@ -24,17 +24,21 @@ public class NonDevCodeReviewTest {
 	
 	private Developer_Side_Tool developer_side_tool= new Developer_Side_Tool();
 	private Network_Interface network_interface;
-	
+	//private IAbstractionExtension abstractextension;
+	private User nonDeveloper = new User("", UserType.NonDeveloper);	
 	
 
 	@Before
 	public void Setup() {	 
 	developer_side_tool= mock(Developer_Side_Tool.class);
+	nonDeveloper= mock(User.class);
 	network_interface=mock(Network_Interface.class);
 	}
 	//Requirement 11
 	@Test
-	public void test_establish_network_connection_success() {			
+	public void test_establish_network_connection_success() {
+		
+				
 		
 		//given
 		String MessageOnConnection="Network Connection Successful";
@@ -72,21 +76,20 @@ public class NonDevCodeReviewTest {
 		
 		//given 
 		String resultreview_sent = new String("please add better variable names");
-		Mockito.when(DeveloperSideTtool.ReviewResults()).thenReturn(resultreview_sent);
+		Mockito.when(developer_side_tool.ReviewResults()).thenReturn(resultreview_sent);
 		
 		String MessageOnSent= new String("Sent via Network");
-		Mockito.when(NetworkInterface.ReviewSent(reviewer,resultreview_sent)).thenReturn(MessageOnSent);
+		Mockito.when(network_interface.ReviewSent(nonDeveloper,resultreview_sent)).thenReturn(MessageOnSent);
 		
 		//when
-		Mockito.when(NetworkInterface.ReviewRecieved()).thenReturn("please add better variable names");
+		Mockito.when(network_interface.ReviewRecieved()).thenReturn("please add better variable names");
 		
 		//then
-		Mockito.when(reviewer.Abstract_recieve()).thenReturn("please add better variable names");
-		String resultreview_recieve = reviewer.AbstractResult_recieve();
+		Mockito.when(nonDeveloper.AbstractResult_recieve()).thenReturn("please add better variable names");
+		String resultreview_recieve = nonDeveloper.AbstractResult_recieve();
 		assertEquals(resultreview_sent,resultreview_recieve);
 				
 	}
 	
-		
 	
 }

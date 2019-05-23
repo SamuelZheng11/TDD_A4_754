@@ -1,4 +1,6 @@
 public class User {
+	//IAbstractionExtension used for module 4
+	IAbstractionExtension abstractextension;
     private final String name;
     private int reviewCount = 0;
     public User(String name, UserType type){
@@ -22,5 +24,10 @@ public class User {
     public String getName(){
         return name;
     }
+    //module 4
+    public String AbstractResult_recieve()
+	{
+		return abstractextension.generateCodeAbstraction();
+	}
 
 }
