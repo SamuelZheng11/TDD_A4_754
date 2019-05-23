@@ -4,7 +4,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static com.mongodb.client.model.Filters.eq;
 import static junit.framework.TestCase.*;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -19,10 +18,10 @@ import org.mockito.Mockito;
 import org.bson.Document;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 public class CodeReviewAllocationTest {
     private String sourceBranchName = "GithubPullRequestFetchTest_Branch";
     private String targetBranchName = "GithubPullRequestFetchTest_TargetBranch";
@@ -118,7 +117,7 @@ public class CodeReviewAllocationTest {
      * tool. A database is used to store the reviewers’ information.
      */
     @Test
-    public void TestDeveloperCanAddCodeReviewer() {
+    public void shouldAllowDeveloperToAddCodeReviewer() {
         //Given
         PullRequest mockPullRequest = Mockito.spy(_github.createPullRequest("Test developer can add code reviewers", sourceBranch, targetBranch));
         int initialReviewCount = nonDeveloper.getReviewCount();
@@ -138,7 +137,7 @@ public class CodeReviewAllocationTest {
     }
 
     @Test
-    public void TestDeveloperCanRemoveCodeReviewer() {
+    public void shouldAllowDeveloperToRemoveCodeReviewer() {
 
         //Given
         PullRequest mockPullRequest = Mockito.spy(_github.createPullRequest("Test developer can remove code reviewers", sourceBranch, targetBranch));
@@ -172,7 +171,7 @@ public class CodeReviewAllocationTest {
      * reviews previously done by a reviewer, the lower count, the higher chance.
      */
     @Test
-    public void TestRandomAllocateCRerToPR() {
+    public void shouldAllowToolToRandomlyAllocateCodeReviewerToPullRequest() {
 
         //Given
         mockDatabaseBehaviourWhenGetAllCodeReviewersIsCalled();
@@ -198,10 +197,11 @@ public class CodeReviewAllocationTest {
 
     }
 
-    /*10)The count will be updated after the allocation. The count information is stored in the database as well.
-     * */
+    /** 10)The count will be updated after the allocation. The count information is
+     * stored in the database as well.
+     */
     @Test
-    public void TestUserCodeReviewIncreases() {
+    public void shouldAutomaticallyIncrementRandomlyAllocatedCodeReviewerCount() {
         //Given
         mockDatabaseBehaviourWhenGetAllCodeReviewersIsCalled();
 
@@ -233,7 +233,7 @@ public class CodeReviewAllocationTest {
      * tool. A database is used to store the reviewers’ information.
      */
     @Test
-    public void TestDeveloperCanAddMultipleCodeReviewers() {
+    public void shouldAllowDeveloperToAddMultipleCodeReviewers() {
         //Given
         PullRequest mockPullRequest = Mockito.spy(_github.createPullRequest("Test developer can add multiple code reviewers", sourceBranch, targetBranch));
 
@@ -265,7 +265,7 @@ public class CodeReviewAllocationTest {
     }
 
     @Test
-    public void TestDeveloperCanRemoveMultipleCodeReviewers() {
+    public void shouldAllowDeveloperToRemoveMultipleCodeReviewers() {
         //Given
         PullRequest mockPullRequest = Mockito.spy(_github.createPullRequest("Test developer can remove multiple code reviewers", sourceBranch, targetBranch));
 
