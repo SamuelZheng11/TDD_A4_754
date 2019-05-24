@@ -103,22 +103,23 @@ public class NonDevCodeReviewTest {
 		//given 
 		Mockito.when(nonDeveloper.AbstractResult_Recieved_fromTool()).thenReturn("please add better variable names");
 		String str= nonDeveloper.AbstractResult_Recieved_fromTool();
-		String review_msg_add = new String(" ensure 4 spaces for format");
+		String review_msg_add = new String(" ensure 4 spaces for format.");
 		String a = (str+review_msg_add);
 		
 		//when 
-		when(nonDeveloper.AbstractResult_Recieved_fromReviewer(str,review_msg_add)).thenReturn(a);
-		String addComment= nonDeveloper.AbstractResult_Recieved_fromReviewer(str,review_msg_add);
+		when(nonDeveloper.NonDev_AddComment(str,review_msg_add)).thenReturn(a);
+		String addComment= nonDeveloper.NonDev_AddComment(str,review_msg_add);
 
 		//then
 		assertEquals(addComment,a);
 	 
 	}
+	//Requirement 13
 	@Test
-	public void Test_SendReview_To_NonDevTool()
+	public void Test_Send_ChangedReview_To_DevTool()
 	{   //given
 		String a= "please add better variable names and ensure 4 spaces for format";
-		when(nonDeveloper.AbstractResult_Recieved_fromReviewer("tools abstract test comments"," and reviewers comments")).thenReturn(a);
+		when(nonDeveloper.NonDev_AddComment("please add better variable names"," and ensure 4 spaces for format.")).thenReturn(a);
 		
 		//when
 		String MessageOnSent= new String("Sent via Network to Developer");
@@ -126,10 +127,28 @@ public class NonDevCodeReviewTest {
 		Mockito.when(network_interface.NonDev_ReviewRecieved()).thenReturn(a);
 		
 		//then
-		Mockito.when(developer_side_tool.Changes_ByReviewer_Recieved(a)).thenReturn("please add better variable names and ensure 4 spaces for format");
+		Mockito.when(developer_side_tool.Changes_ByReviewer_Recieved(a)).thenReturn("please add better variable names and ensure 4 spaces for format.");
 		String nondev_resultfetched = developer_side_tool.Changes_ByReviewer_Recieved(a);
 		assertEquals(nondev_resultfetched,a);
 
+	}
+	@Test
+	public void Test_DeveloperModifies_NonDevReview()
+	{
+				//given 
+				String finalNonDevComment= "please add better variable names and ensure 4 spaces for format.";
+				when(developer.AbstractResult_Recieved_fromTool()).thenReturn(finalNonDevComment);
+				String strOriginal= developer.AbstractResult_Recieved_fromTool();
+				
+				//when
+				String dev_msg_add = new String("the review looks good");
+				String finalNonDevComment = strOriginal+dev_msg_add; 
+				
+				//then
+				String finalDevComment="please add better variable names and ensure 4 spaces for format";
+				when(developer.Developer_AddComment(strOriginal,dev_msg_add)).thenReturn(finalDevComment);
+				String addFinalComment= nonDeveloper.addComment(finalNonDevComment,dev_msg_add);
+				assertEquals(addFinalComment,finalDevComment);
 	}
 	
 }
