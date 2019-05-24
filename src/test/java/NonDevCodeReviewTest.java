@@ -125,7 +125,7 @@ public class NonDevCodeReviewTest {
 		Mockito.when(network_interface.NonDev_ReviewRecieved()).thenReturn(a);
 		
 		//then
-		String nondev_resultfetched = nonDeveloper.addComment(a);
+		String nondev_resultfetched = developer_side_tool.Changes_ByReviewer_Recieved(a);
 		assertEquals(nondev_resultfetched,a);
 
 	}
