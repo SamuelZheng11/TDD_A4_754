@@ -1,7 +1,9 @@
 public class User {
 	//IAbstractionExtension used for module 4
 	IAbstractionExtension abstractextension;
+	
     private final String name;
+    public String str1 ;
     private int reviewCount = 0;
     public User(String name, UserType type){
         this.name = name;
@@ -31,3 +33,4 @@ public class User {
 	}
 
 }
+

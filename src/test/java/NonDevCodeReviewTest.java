@@ -24,7 +24,11 @@ public class NonDevCodeReviewTest {
 	
 	private Developer_Side_Tool developer_side_tool= new Developer_Side_Tool();
 	private Network_Interface network_interface;
-	private User nonDeveloper = new User("", UserType.NonDeveloper);	
+	private User nonDeveloper = new User("", UserType.NonDeveloper);
+	private PullRequest pullrequest;
+	private GitComment gitcomment1;
+	private GitComment gitcomment2;
+
 	
 
 	@Before
@@ -32,9 +36,10 @@ public class NonDevCodeReviewTest {
 	developer_side_tool= mock(Developer_Side_Tool.class);
 	nonDeveloper= mock(User.class);
 	network_interface=mock(Network_Interface.class);
+	
 	}
 	//Requirement 11
-	@Test
+	//@Test
 	public void test_establish_network_connection_success() {
 		
 				
@@ -51,7 +56,7 @@ public class NonDevCodeReviewTest {
 		assertEquals(MessageOnConnection,checkMessage);
 				
 	}
-	@Test
+	//@Test
 	public void test_establish_network_connection_fail() {
 		developer_side_tool= mock(Developer_Side_Tool.class);
 		network_interface=mock(Network_Interface.class);
@@ -69,10 +74,10 @@ public class NonDevCodeReviewTest {
 		assertEquals(MessageOnConnection,checkMessage);
 				
 	}
-	@Test
+	//@Test
 	public void Test_InitialReview_viaNetwork()
 	{
-		
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            		
 		//given 
 		String resultreview_sent = new String("please add better variable names");
 		Mockito.when(developer_side_tool.ReviewResults()).thenReturn(resultreview_sent);
@@ -90,5 +95,20 @@ public class NonDevCodeReviewTest {
 				
 	}
 	
-	
+	@Test 
+	public void Test_High_Level_Review()
+	{	
+		//given 
+		Mockito.when(nonDeveloper.AbstractResult_recieve()).thenReturn("please add better variable names");
+		String str= nonDeveloper.AbstractResult_recieve();
+		String review_msg_add = new String(" ensure 4 spaces for format");
+		String a = (str+review_msg_add);
+		
+		//when 
+		when(nonDeveloper.addComment(str,review_msg_add)).thenReturn("please add better variable names ensure 4 spaces for format");
+		String addComment= nonDeveloper.addComment(str,review_msg_add);
+
+		//then
+		assertEquals(addComment,a);
+	 }
 }
