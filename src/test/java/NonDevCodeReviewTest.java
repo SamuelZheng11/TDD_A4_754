@@ -82,7 +82,7 @@ public class NonDevCodeReviewTest {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             		
 		//given 
 		String resultreview_sent = new String("please add better variable names");
-		Mockito.when(developer_side_tool.ReviewResults()).thenReturn(resultreview_sent);
+		Mockito.when(developer_side_tool.Changes_ByTool_Recieved()).thenReturn(resultreview_sent);
 		
 		String MessageOnSent= new String("Sent via Network to Non Developer");
 		Mockito.when(network_interface.Auto_ReviewSent(nonDeveloper,resultreview_sent)).thenReturn(MessageOnSent);

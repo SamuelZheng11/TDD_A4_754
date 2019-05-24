@@ -7,7 +7,8 @@ public class Developer_Side_Tool {
 	{
 		return networkinterface.CreateConnection();
 	}
-	public String ReviewResults()
+	
+	public String Changes_ByTool_Recieved()
 	{
 			return abstractionextension.generateCodeAbstraction();
 	}

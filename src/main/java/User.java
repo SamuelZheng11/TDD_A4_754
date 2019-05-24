@@ -1,9 +1,9 @@
 public class User {
 	//IAbstractionExtension used for module 4
 	IAbstractionExtension abstractextension;
-	
+    public String str ;
+
     private final String name;
-    public String str1 ;
     private int reviewCount = 0;
     public User(String name, UserType type){
         this.name = name;
@@ -31,9 +31,10 @@ public class User {
 	{
 		return abstractextension.generateCodeAbstraction();
 	}
-public String AbstractResult_Recieved_fromReviewer(String str, String str2) {
+    
+    public String AbstractResult_Recieved_fromReviewer(String str1, String str2) {
     	
-	str1 = str+str2;
+	str = str1+str2;
 	return abstractextension.generateReviewerAbstraction();
     }
 
