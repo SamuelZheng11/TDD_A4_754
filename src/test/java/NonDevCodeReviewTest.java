@@ -147,7 +147,7 @@ public class NonDevCodeReviewTest {
 				//then
 				String finalDevComment="please add better variable names and ensure 4 spaces for format";
 				when(developer.Developer_AddComment(strOriginal,dev_msg_add)).thenReturn(finalDevComment);
-				String addFinalComment= nonDeveloper.addComment(finalNonDevComment,dev_msg_add);
+				String addFinalComment= Developer.addComment(finalNonDevComment,dev_msg_add);
 				assertEquals(addFinalComment,finalDevComment);
 	}
 	
