@@ -120,7 +120,6 @@ public class NonDevCodeReviewTest {
 		String a= "please add better variable names and ensure 4 spaces for format";
 		when(nonDeveloper.addComment("tools abstract test comments"," and reviewers comments")).thenReturn(a);
 		
-		
 		//when
 		String MessageOnSent= new String("Sent via Network to Developer");
 		Mockito.when(network_interface.NonDev_ReviewSent(developer,a)).thenReturn(MessageOnSent);
