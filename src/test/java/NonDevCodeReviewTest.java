@@ -25,6 +25,8 @@ public class NonDevCodeReviewTest {
 	private Developer_Side_Tool developer_side_tool= new Developer_Side_Tool();
 	private Network_Interface network_interface;
 	private User nonDeveloper = new User("", UserType.NonDeveloper);
+	private User developer = new User("", UserType.Developer);
+
 	private PullRequest pullrequest;
 	private GitComment gitcomment1;
 	private GitComment gitcomment2;
@@ -115,8 +117,8 @@ public class NonDevCodeReviewTest {
 	@Test
 	public void Test_SendReview_To_NonDevTool()
 	{   //given
-		String a= "please add better variable names ensure 4 spaces for format";
-		when(nonDeveloper.addComment("tools abstract test comments","and reviewers comments")).thenReturn(a);
+		String a= "please add better variable names and ensure 4 spaces for format";
+		when(nonDeveloper.addComment("tools abstract test comments"," and reviewers comments")).thenReturn(a);
 		
 		
 		//when
@@ -125,6 +127,7 @@ public class NonDevCodeReviewTest {
 		Mockito.when(network_interface.NonDev_ReviewRecieved()).thenReturn(a);
 		
 		//then
+		Mockito.when(developer_side_tool.Changes_ByReviewer_Recieved(a)).thenReturn("please add better variable names and ensure 4 spaces for format");
 		String nondev_resultfetched = developer_side_tool.Changes_ByReviewer_Recieved(a);
 		assertEquals(nondev_resultfetched,a);
 

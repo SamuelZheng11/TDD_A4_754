@@ -12,4 +12,9 @@ public class Developer_Side_Tool {
 			return abstractionextension.generateCodeAbstraction();
 	}
 	
+	public String Changes_ByReviewer_Recieved(String str)
+	{
+		return "";
+	}
+	
 }
