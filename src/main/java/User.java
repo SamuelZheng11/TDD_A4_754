@@ -31,10 +31,10 @@ public class User {
 	{
 		return abstractextension.generateCodeAbstraction();
 	}
-public String addComment(String str, String str2) {
+public String AbstractResult_Recieved_fromReviewer(String str, String str2) {
     	
 	str1 = str+str2;
-	return "";
+	return abstractextension.generateReviewerAbstraction();
     }
 
 }

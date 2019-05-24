@@ -91,8 +91,8 @@ public class NonDevCodeReviewTest {
 		Mockito.when(network_interface.Auto_ReviewRecieved()).thenReturn("please add better variable names");
 		
 		//then
-		Mockito.when(nonDeveloper.AbstractResult_recieve()).thenReturn("please add better variable names");
-		String resultreview_recieve = nonDeveloper.AbstractResult_recieve();
+		Mockito.when(nonDeveloper.AbstractResult_Recieved_fromTool()).thenReturn("please add better variable names");
+		String resultreview_recieve = nonDeveloper.AbstractResult_Recieved_fromTool();
 		assertEquals(resultreview_sent,resultreview_recieve);
 				
 	}
@@ -101,14 +101,14 @@ public class NonDevCodeReviewTest {
 	public void Test_High_Level_Review()
 	{	
 		//given 
-		Mockito.when(nonDeveloper.AbstractResult_recieve()).thenReturn("please add better variable names");
-		String str= nonDeveloper.AbstractResult_recieve();
+		Mockito.when(nonDeveloper.AbstractResult_Recieved_fromTool()).thenReturn("please add better variable names");
+		String str= nonDeveloper.AbstractResult_Recieved_fromTool();
 		String review_msg_add = new String(" ensure 4 spaces for format");
 		String a = (str+review_msg_add);
 		
 		//when 
-		when(nonDeveloper.addComment(str,review_msg_add)).thenReturn(a);
-		String addComment= nonDeveloper.addComment(str,review_msg_add);
+		when(nonDeveloper.AbstractResult_Recieved_fromReviewer(str,review_msg_add)).thenReturn(a);
+		String addComment= nonDeveloper.AbstractResult_Recieved_fromReviewer(str,review_msg_add);
 
 		//then
 		assertEquals(addComment,a);
@@ -118,7 +118,7 @@ public class NonDevCodeReviewTest {
 	public void Test_SendReview_To_NonDevTool()
 	{   //given
 		String a= "please add better variable names and ensure 4 spaces for format";
-		when(nonDeveloper.addComment("tools abstract test comments"," and reviewers comments")).thenReturn(a);
+		when(nonDeveloper.AbstractResult_Recieved_fromReviewer("tools abstract test comments"," and reviewers comments")).thenReturn(a);
 		
 		//when
 		String MessageOnSent= new String("Sent via Network to Developer");
