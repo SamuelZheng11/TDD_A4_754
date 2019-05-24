@@ -142,12 +142,12 @@ public class NonDevCodeReviewTest {
 				
 				//when
 				String dev_msg_add = new String("the review looks good");
-				String finalNonDevComment = strOriginal+dev_msg_add; 
+				String finalDevComment = strOriginal+dev_msg_add; 
 				
 				//then
-				String finalDevComment="please add better variable names and ensure 4 spaces for format";
-				when(developer.Developer_AddComment(strOriginal,dev_msg_add)).thenReturn(finalDevComment);
-				String addFinalComment= Developer.addComment(finalNonDevComment,dev_msg_add);
+				String dev_msg_add_final="please add better variable names and ensure 4 spaces for format";
+				when(developer.Dev_AddComment(strOriginal,dev_msg_add)).thenReturn(finalDevComment);
+				String addFinalComment= developer.Dev_AddComment(finalNonDevComment,dev_msg_add);
 				assertEquals(addFinalComment,finalDevComment);
 	}
 	

@@ -31,6 +31,7 @@ public class User {
 	{
 		return abstractextension.generateCodeAbstraction();
 	}
+    //requirement 12
     public String NonDev_AddComment(String str, String str2) {
     	
 	str1 = str+str2;
@@ -40,6 +41,14 @@ public class User {
 	{
 		return abstractextension.generateReviewerAbstraction();
 	}
+    //requirement 13
+    public String Dev_AddComment(String str, String str2) {
+    	
+    	return "";
+     }
+    public String AbstractResult_FinalChange_fromDev() {
+		return abstractextension.generateDevCodeAbstraction();
 
+    }
 }
 
