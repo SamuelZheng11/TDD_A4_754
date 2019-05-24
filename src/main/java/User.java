@@ -27,7 +27,7 @@ public class User {
         return name;
     }
     //module 4
-    public String AbstractResult_recieve()
+    public String AbstractResult_Recieved_fromTool()
 	{
 		return abstractextension.generateCodeAbstraction();
 	}
@@ -36,5 +36,6 @@ public String addComment(String str, String str2) {
 	str1 = str+str2;
 	return "";
     }
+
 }
 

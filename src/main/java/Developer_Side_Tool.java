@@ -14,7 +14,7 @@ public class Developer_Side_Tool {
 	
 	public String Changes_ByReviewer_Recieved(String str)
 	{
-		return "";
+		return abstractionextension.generateReviewerAbstraction();
 	}
 	
 }
