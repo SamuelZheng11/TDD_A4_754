@@ -28,7 +28,9 @@ public class User {
     }
     
     //module 4
+    
     //requirement 11
+    //Final comments received from the automated tool
     public String AbstractResult_Recieved_fromTool()
 	{
 		return abstractextension.generateCodeAbstraction();
@@ -41,6 +43,7 @@ public class User {
     	//AbstractResult_Recieved_fromNonDev();
     	return str;
     }
+    //Final comments received from the Non Developer
     public String AbstractResult_Recieved_fromNonDev()
 	{
 		return abstractextension.generateReviewerAbstraction();
@@ -54,6 +57,7 @@ public class User {
     	return str;
 
      }
+    //Final comments received from the Developer
     public String AbstractResult_FinalChange_fromDev() {
 		return abstractextension.generateDevCodeAbstraction();
 
