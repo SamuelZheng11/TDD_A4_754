@@ -31,6 +31,9 @@ public class User {
 	{
 		return abstractextension.generateCodeAbstraction();
 	}
-
+public String addComment(String str, String str2) {
+    	
+    	
+    }
 }
 

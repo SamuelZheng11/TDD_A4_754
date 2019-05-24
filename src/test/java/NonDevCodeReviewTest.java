@@ -39,7 +39,7 @@ public class NonDevCodeReviewTest {
 	
 	}
 	//Requirement 11
-	//@Test
+	@Test
 	public void test_establish_network_connection_success() {
 		
 				
@@ -56,7 +56,7 @@ public class NonDevCodeReviewTest {
 		assertEquals(MessageOnConnection,checkMessage);
 				
 	}
-	//@Test
+	@Test
 	public void test_establish_network_connection_fail() {
 		developer_side_tool= mock(Developer_Side_Tool.class);
 		network_interface=mock(Network_Interface.class);
@@ -74,7 +74,7 @@ public class NonDevCodeReviewTest {
 		assertEquals(MessageOnConnection,checkMessage);
 				
 	}
-	//@Test
+	@Test
 	public void Test_InitialReview_viaNetwork()
 	{
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             		
