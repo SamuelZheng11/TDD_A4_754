@@ -26,19 +26,14 @@ public class NonDevCodeReviewTest {
 	private Network_Interface network_interface;
 	private User nonDeveloper = new User("", UserType.NonDeveloper);
 	private User developer = new User("", UserType.Developer);
-
-	private PullRequest pullrequest;
-	private GitComment gitcomment1;
-	private GitComment gitcomment2;
-
 	
 
 	@Before
 	public void Setup() {	 
 	developer_side_tool= mock(Developer_Side_Tool.class);
 	nonDeveloper= mock(User.class);
+	developer=mock(User.class);
 	network_interface=mock(Network_Interface.class);
-	
 	}
 	//Requirement 11
 	@Test
@@ -118,7 +113,7 @@ public class NonDevCodeReviewTest {
 	@Test
 	public void Test_Send_ChangedReview_To_DevTool()
 	{   //given
-		String a= "please add better variable names and ensure 4 spaces for format";
+		String a= "please add better variable names and ensure 4 spaces for format.";
 		when(nonDeveloper.NonDev_AddComment("please add better variable names"," and ensure 4 spaces for format.")).thenReturn(a);
 		
 		//when
@@ -136,19 +131,18 @@ public class NonDevCodeReviewTest {
 	public void Test_DeveloperModifies_NonDevReview()
 	{
 				//given 
-				String finalNonDevComment= "please add better variable names and ensure 4 spaces for format.";
-				when(developer.AbstractResult_Recieved_fromTool()).thenReturn(finalNonDevComment);
-				String strOriginal= developer.AbstractResult_Recieved_fromTool();
+				Mockito.when(developer.AbstractResult_Recieved_fromNonDev()).thenReturn("please add better variable names and ensure 4 spaces for format.");
+				String strOriginal=developer.AbstractResult_Recieved_fromNonDev();
 				
 				//when
-				String dev_msg_add = new String("the review looks good");
-				String finalDevComment = strOriginal+dev_msg_add; 
+				String dev_msg_add = new String("The review looks good");
+				String finalReview = strOriginal+dev_msg_add; 
 				
 				//then
-				String dev_msg_add_final="please add better variable names and ensure 4 spaces for format";
-				when(developer.Dev_AddComment(strOriginal,dev_msg_add)).thenReturn(finalDevComment);
-				String addFinalComment= developer.Dev_AddComment(finalNonDevComment,dev_msg_add);
-				assertEquals(addFinalComment,finalDevComment);
+				String dev_finalcomment="please add better variable names and ensure 4 spaces for format.The review looks good";
+				when(developer.Dev_AddComment(strOriginal,dev_msg_add)).thenReturn(finalReview);
+				String addFinalComment= developer.Dev_AddComment(strOriginal,dev_msg_add);
+				assertEquals(addFinalComment,dev_finalcomment);
 	}
 	
 }

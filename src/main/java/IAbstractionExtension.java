@@ -6,3 +6,4 @@ public interface IAbstractionExtension {
     String generateReviewerAbstraction();
     String generateDevCodeAbstraction();
 }
+ 
