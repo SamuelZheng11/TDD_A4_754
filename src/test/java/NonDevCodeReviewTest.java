@@ -25,6 +25,7 @@ public class NonDevCodeReviewTest {
 	private Developer_Side_Tool developer_side_tool= new Developer_Side_Tool();
 	private Network_Interface network_interface;
 	private User nonDeveloper = new User("", UserType.NonDeveloper);
+	private User developer = new User("", UserType.Developer);
 
 	private PullRequest pullrequest;
 	private GitComment gitcomment1;
