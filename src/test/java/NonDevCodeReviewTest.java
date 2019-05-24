@@ -82,11 +82,11 @@ public class NonDevCodeReviewTest {
 		String resultreview_sent = new String("please add better variable names");
 		Mockito.when(developer_side_tool.ReviewResults()).thenReturn(resultreview_sent);
 		
-		String MessageOnSent= new String("Sent via Network");
-		Mockito.when(network_interface.ReviewSent(nonDeveloper,resultreview_sent)).thenReturn(MessageOnSent);
+		String MessageOnSent= new String("Sent via Network to Non Developer");
+		Mockito.when(network_interface.Auto_ReviewSent(nonDeveloper,resultreview_sent)).thenReturn(MessageOnSent);
 		
 		//when
-		Mockito.when(network_interface.ReviewRecieved()).thenReturn("please add better variable names");
+		Mockito.when(network_interface.Auto_ReviewRecieved()).thenReturn("please add better variable names");
 		
 		//then
 		Mockito.when(nonDeveloper.AbstractResult_recieve()).thenReturn("please add better variable names");
@@ -105,11 +105,29 @@ public class NonDevCodeReviewTest {
 		String a = (str+review_msg_add);
 		
 		//when 
-		when(nonDeveloper.addComment(str,review_msg_add)).thenReturn("please add better variable names ensure 4 spaces for format");
+		when(nonDeveloper.addComment(str,review_msg_add)).thenReturn(a);
 		String addComment= nonDeveloper.addComment(str,review_msg_add);
 
 		//then
 		assertEquals(addComment,a);
 	 
 	}
+	@Test
+	public void Test_SendReview_To_NonDevTool()
+	{   //given
+		String a= "please add better variable names ensure 4 spaces for format";
+		when(nonDeveloper.addComment("tools abstract test comments","and reviewers comments")).thenReturn(a);
+		
+		
+		//when
+		String MessageOnSent= new String("Sent via Network to Developer");
+		Mockito.when(network_interface.NonDev_ReviewSent(developer,a)).thenReturn(MessageOnSent);
+		Mockito.when(network_interface.NonDev_ReviewRecieved()).thenReturn(a);
+		
+		//then
+		String nondev_resultfetched = nonDeveloper.addComment(a);
+		assertEquals(nondev_resultfetched,a);
+
+	}
+	
 }
