@@ -49,11 +49,13 @@ public class User {
     //Final comments received from the Non Developer
     public String AbstractResult_Recieved_fromNonDev()
 	{
-
+    	return abstractionextension.generateReviewerAbstraction();
 	}
     public String Dev_AddComment(String str1, String str2) {
     	
-    	
+    	str = str1+str2;
+    	//AbstractResult_FinalChange_fromDev();
+    	return str;
 
      }
 }
