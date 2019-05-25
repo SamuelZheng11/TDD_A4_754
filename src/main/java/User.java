@@ -30,8 +30,7 @@ public class User {
     public String getName(){
         return name;
     }
-    //module 4
-    
+    //module 4   
     //requirement 11
     //Final comments received from the automated tool
     public String AbstractResult_Recieved_fromTool()
@@ -64,20 +63,7 @@ public class User {
     }
     //Final Developer Approval
     public String verdict;
-    public void Users(String verdict)
-    {
-        this.verdict = verdict;
-    }
-    public String getDevelopers_Input()
-    {
-        return verdict;
-    }
 
-    public void setDevelopers_Input(String verdict)
-    {
-        this.verdict = verdict;
-    }
-    
     public String FinalVeredict(String str,String verdict)
     {
     	if(verdict=="yes")
