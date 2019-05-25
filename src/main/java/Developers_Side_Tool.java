@@ -5,7 +5,7 @@ public class Developers_Side_Tool {
 	IAbstractionExtension abstractionextension;
 	public String ConnectionEstablished()
 	{
-	
+		return networkinterface.CreateConnection();
 	
 	}
 
