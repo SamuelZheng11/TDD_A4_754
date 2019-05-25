@@ -11,7 +11,7 @@ public class Developers_Side_Tool {
 	}
 	public String Changes_ByTool_Recieved()
 	{
-	
+		return abstractionextension.generateCodeAbstraction();
 	}
 
 

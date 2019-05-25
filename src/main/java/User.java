@@ -1,5 +1,6 @@
 public class User {
 	//IAbstractionExtension used for module 4	
+	IAbstractionExtension abstractionextension;
     private final String name;
     public String str ;
     private int reviewCount = 0;
@@ -30,7 +31,7 @@ public class User {
     //Final comments received from the automated tool
     public String AbstractResult_Recieved_fromTool()
 	{
-    	
+    	return abstractionextension.generateCodeAbstraction();
 	}
     
     
