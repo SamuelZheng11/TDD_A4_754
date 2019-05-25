@@ -1,7 +1,5 @@
 public class User {
-	//IAbstractionExtension used for module 4
-	IAbstractionExtension abstractextension;
-	
+	//IAbstractionExtension used for module 4	
     private final String name;
     public String str ;
     private int reviewCount = 0;
