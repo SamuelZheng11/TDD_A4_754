@@ -157,5 +157,19 @@ public class NonDevCodeReviewTest {
 					String addFinalComment= developer.Dev_AddComment(strOriginal,dev_msg_add);
 					assertEquals(addFinalComment,dev_finalcomment);
 		}
+		@Test
+	    public void Test_Dev_ApproveReview()
+	    {
+			//given
+			Mockito.when(developer.AbstractResult_FinalChange_fromDev()).thenReturn("please add better variable names and ensure 4 spaces for format.The review looks good");
+			String final_review= developer.AbstractResult_FinalChange_fromDev();
+			//when
+			String approval_sign="approved";
+			Mockito.when(developer.FinalVeredict(final_review,verdict)).thenReturn("approved");
+			String Dev_final_review=developer.FinalVeredict(final_review,verdict);
+			//then
+			assertEquals(Dev_final_review,approval_sign);
+	    }
+
 		
 }
