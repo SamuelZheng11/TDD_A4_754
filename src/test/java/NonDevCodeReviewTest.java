@@ -104,7 +104,7 @@ public class NonDevCodeReviewTest {
 	}
 	//Requirement 12
 		@Test 
-		public void Test_High_Level_Review()
+		public void Should_Perform_HighLevel_Review_ByNonDev()
 		{	
 			//given 
 			Mockito.when(nonDeveloper.AbstractResult_Recieved_fromTool()).thenReturn("please add better variable names");
@@ -117,8 +117,7 @@ public class NonDevCodeReviewTest {
 			String addComment= nonDeveloper.NonDev_AddComment(str,review_msg_add);
 
 			//then
-			assertEquals(addComment,a);
-		 
+			assertEquals(addComment,a);	 
 		}
 	
 }
