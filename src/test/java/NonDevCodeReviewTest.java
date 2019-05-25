@@ -63,6 +63,23 @@ public class NonDevCodeReviewTest {
 		assertEquals(MessageOnConnection,checkMessage);
 				
 	}
-	
+	@Test
+	public void Should_establish_network_connection_fail() {
+		developer_side_tool= mock(Developer_Side_Tool.class);
+		network_interface=mock(Network_Interface.class);
+				
+		
+		//given
+		String MessageOnConnection="Network Connection error";
+		Mockito.when(network_interface.CreateConnection()).thenReturn(MessageOnConnection);
+		
+		//when
+		Mockito.when(developer_side_tool.ConnectionEstablished()).thenReturn("Network Connection error");
+		String checkMessage = developer_side_tool.ConnectionEstablished();
+		
+		//then
+		assertEquals(MessageOnConnection,checkMessage);
+				
+	}
 	
 }
