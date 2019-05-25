@@ -59,12 +59,30 @@ public class User {
      }
     //Final comments received from the Developer
     public String AbstractResult_FinalChange_fromDev() {
+		return abstractionextension.generateDevCodeAbstraction();
 
     }
-   
+    public String verdict;
+    public void Users(String verdict)
+    {
+        this.verdict = verdict;
+    }
+    public String getDevelopers_Input()
+    {
+        return verdict;
+    }
+
+    public void setDevelopers_Input(String verdict)
+    {
+        this.verdict = verdict;
+    }
+    
     public Boolean FinalVeredict(String str,String verdict)
     {
-    	
+    	if(verdict=="approved")
+    		return true;
+    	else
+    		return false;
     }	
     
 }
