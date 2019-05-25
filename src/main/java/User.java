@@ -33,9 +33,8 @@ public class User {
 	{
     	return abstractionextension.fetchAbstraction_fromTool();
 	}
-    
-    
- 
-   
-
+    public String NonDev_AddComment(String str1, String str2) {
+    	
+    	
+    }
 }
