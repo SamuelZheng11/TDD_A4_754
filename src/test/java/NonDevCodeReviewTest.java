@@ -42,6 +42,7 @@ public class NonDevCodeReviewTest {
 	private Developers_Side_Tool developer_side_tool= new Developers_Side_Tool();
 	private Network_API network_interface;
 	private User nonDeveloper = new User("", UserType.NonDeveloper);	
+	private User developer = new User("", UserType.NonDeveloper);	
 
 
 	@Before
@@ -49,6 +50,8 @@ public class NonDevCodeReviewTest {
 	developer_side_tool= mock(Developers_Side_Tool.class);
 	network_interface=mock(Network_API.class);
 	nonDeveloper= mock(User.class);
+    developer= mock(User.class);
+
 
 	}
 	//Requirement 11
@@ -104,7 +107,7 @@ public class NonDevCodeReviewTest {
 	}
 	//Requirement 12
 		@Test 
-		public void Test_High_Level_Review()
+		public void Should_Perform_HighLevel_Review_ByNonDev()
 		{	
 			//given 
 			Mockito.when(nonDeveloper.AbstractResult_Recieved_fromTool()).thenReturn("please add better variable names");
@@ -117,8 +120,56 @@ public class NonDevCodeReviewTest {
 			String addComment= nonDeveloper.NonDev_AddComment(str,review_msg_add);
 
 			//then
-			assertEquals(addComment,a);
-		 
+			assertEquals(addComment,a);	 
 		}
-	
+		//Requirement 13
+		@Test
+		public void Should_Send_ChangedReview_To_DevTool()
+		{   //given
+			String a= "please add better variable names and ensure 4 spaces for format.";
+			when(nonDeveloper.NonDev_AddComment("please add better variable names"," and ensure 4 spaces for format.")).thenReturn(a);
+			
+			//when
+			String MessageOnSent= new String("Sent via Network to Developer");
+			Mockito.when(network_interface.NonDev_ReviewSent(developer,a)).thenReturn(MessageOnSent);
+			Mockito.when(network_interface.NonDev_ReviewRecieved()).thenReturn(a);
+			
+			//then
+			Mockito.when(developer_side_tool.Changes_ByReviewer_Recieved(a)).thenReturn("please add better variable names and ensure 4 spaces for format.");
+			String nondev_resultfetched = developer_side_tool.Changes_ByReviewer_Recieved(a);
+			assertEquals(nondev_resultfetched,a);
+
+		}
+		@Test
+		public void Should_Allow_DeveloperToModify_NonDevReview()
+		{
+					//given 
+					Mockito.when(developer.AbstractResult_Recieved_fromNonDev()).thenReturn("please add better variable names and ensure 4 spaces for format.");
+					String strOriginal=developer.AbstractResult_Recieved_fromNonDev();
+					
+					//when
+					String dev_msg_add = new String("The review looks good");
+					String finalReview = strOriginal+dev_msg_add; 
+					
+					//then
+					String dev_finalcomment="please add better variable names and ensure 4 spaces for format.The review looks good";
+					when(developer.Dev_AddComment(strOriginal,dev_msg_add)).thenReturn(finalReview);
+					String addFinalComment= developer.Dev_AddComment(strOriginal,dev_msg_add);
+					assertEquals(addFinalComment,dev_finalcomment);
+		}
+		@Test
+	    public void ShouldBe__ApprovedByDev()
+	    {
+			//given
+			Mockito.when(developer.AbstractResult_FinalChange_fromDev()).thenReturn("please add better variable names and ensure 4 spaces for format.The review looks good");
+			String final_review= developer.AbstractResult_FinalChange_fromDev();
+			//when
+			String verdict="yes";
+			Mockito.when(developer.FinalVeredict(final_review,verdict)).thenReturn("approved");
+			String Dev_final_review=developer.FinalVeredict(final_review,verdict);
+			//then
+			assertEquals(Dev_final_review,"approved");
+	    }
+
+		
 }

@@ -13,6 +13,9 @@ public class Developers_Side_Tool {
 	{
 		return abstractionextension.fetchAbstraction_fromTool();
 	}
-
+	public String Changes_ByReviewer_Recieved(String str)
+	{
+		return abstractionextension.generateReviewerAbstraction();
+	}
 
 }
