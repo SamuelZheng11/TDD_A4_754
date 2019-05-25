@@ -35,6 +35,8 @@ public class User {
 	}
     public String NonDev_AddComment(String str1, String str2) {
     	
-    	
+    	str = str1+str2;
+    	//AbstractResult_Recieved_fromNonDev();
+    	return str;
     }
 }
