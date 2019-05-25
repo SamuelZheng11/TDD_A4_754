@@ -1,6 +1,6 @@
 public class User {
 	//IAbstractionExtension used for module 4	
-	IAbstractionExtension abstractionextension;
+	Abstraction_ForNetwork abstractionextension;
     private final String name;
     public String str ;
     private int reviewCount = 0;
