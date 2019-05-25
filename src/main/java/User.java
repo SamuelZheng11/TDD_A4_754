@@ -62,6 +62,7 @@ public class User {
 		return abstractionextension.generateDevCodeAbstraction();
 
     }
+    //Final Developer Approval
     public String verdict;
     public void Users(String verdict)
     {
@@ -77,12 +78,12 @@ public class User {
         this.verdict = verdict;
     }
     
-    public Boolean FinalVeredict(String str,String verdict)
+    public String FinalVeredict(String str,String verdict)
     {
-    	if(verdict=="approved")
-    		return true;
+    	if(verdict=="yes")
+    		return "approved";
     	else
-    		return false;
+    		return "disapproved";
     }	
     
 }

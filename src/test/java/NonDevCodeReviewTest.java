@@ -164,11 +164,11 @@ public class NonDevCodeReviewTest {
 			Mockito.when(developer.AbstractResult_FinalChange_fromDev()).thenReturn("please add better variable names and ensure 4 spaces for format.The review looks good");
 			String final_review= developer.AbstractResult_FinalChange_fromDev();
 			//when
-			String verdict="approved";
-			Mockito.when(developer.FinalVeredict(final_review,verdict)).thenReturn(true);
-			Boolean Dev_final_review=developer.FinalVeredict(final_review,verdict);
+			String verdict="yes";
+			Mockito.when(developer.FinalVeredict(final_review,verdict)).thenReturn("approved");
+			String Dev_final_review=developer.FinalVeredict(final_review,verdict);
 			//then
-			assertEquals(Dev_final_review,true);
+			assertEquals(Dev_final_review,"approved");
 	    }
 
 		
