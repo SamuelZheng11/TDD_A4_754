@@ -119,5 +119,23 @@ public class NonDevCodeReviewTest {
 			//then
 			assertEquals(addComment,a);	 
 		}
-	
+		//Requirement 13
+		@Test
+		public void Test_Send_ChangedReview_To_DevTool()
+		{   //given
+			String a= "please add better variable names and ensure 4 spaces for format.";
+			when(nonDeveloper.NonDev_AddComment("please add better variable names"," and ensure 4 spaces for format.")).thenReturn(a);
+			
+			//when
+			String MessageOnSent= new String("Sent via Network to Developer");
+			Mockito.when(network_interface.NonDev_ReviewSent(developer,a)).thenReturn(MessageOnSent);
+			Mockito.when(network_interface.NonDev_ReviewRecieved()).thenReturn(a);
+			
+			//then
+			Mockito.when(developer_side_tool.Changes_ByReviewer_Recieved(a)).thenReturn("please add better variable names and ensure 4 spaces for format.");
+			String nondev_resultfetched = developer_side_tool.Changes_ByReviewer_Recieved(a);
+			assertEquals(nondev_resultfetched,a);
+
+		}
+		
 }
