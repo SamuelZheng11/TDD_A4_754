@@ -38,10 +38,22 @@ public class User {
 	{
     	return abstractionextension.fetchAbstraction_fromTool();
 	}
+    //requirement 12
     public String NonDev_AddComment(String str1, String str2) {
     	
     	str = str1+str2;
     	//AbstractResult_Recieved_fromNonDev();
     	return str;
     }
+    //requirement 13
+    //Final comments received from the Non Developer
+    public String AbstractResult_Recieved_fromNonDev()
+	{
+
+	}
+    public String Dev_AddComment(String str1, String str2) {
+    	
+    	
+
+     }
 }
