@@ -56,6 +56,15 @@ public class User {
     	str = str1+str2;
     	//AbstractResult_FinalChange_fromDev();
     	return str;
-
      }
+    //Final comments received from the Developer
+    public String AbstractResult_FinalChange_fromDev() {
+
+    }
+   
+    public Boolean FinalVeredict(String str,String verdict)
+    {
+    	
+    }	
+    
 }
