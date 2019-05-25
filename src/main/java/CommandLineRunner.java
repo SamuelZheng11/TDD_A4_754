@@ -17,13 +17,9 @@ public class CommandLineRunner {
         cli.exec(commands);
 
         IBufferedReader reader = cli.getInputStream();
-
-        if(reader == null) {
-            return null;
-        }
-
+        
         String output;
-        while((output = reader.readLine()) != null) {
+        while((output = reader.readLine()) != null && output != "") {
             cliOutput.add(output);
         }
 

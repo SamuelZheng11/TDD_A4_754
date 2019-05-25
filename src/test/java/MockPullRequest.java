@@ -1,10 +1,8 @@
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class MockPullRequest extends PullRequest {
     private List<GitComment> commentsPosted = new ArrayList<GitComment>();
-    private List<CodeReview> codeReviews = new ArrayList<CodeReview>();
+    private List<CodeReviewAllocation> codeReviewAllocations = new ArrayList<CodeReviewAllocation>();
     public MockPullRequest(User user, String title, GitBranch source, GitBranch target) {
         super(user, title, source, target);
     }
@@ -18,33 +16,47 @@ public class MockPullRequest extends PullRequest {
         return commentsPosted;
     }
 
-    public void addCodeReview(CodeReview codeReview) {
-        codeReviews.add(codeReview);
+    public void addCodeReview(CodeReviewAllocation codeReviewAllocation) {
+        codeReviewAllocations.add(codeReviewAllocation);
+    }
+
+    public CodeReviewAllocation createCodeReview(User requester, User codeReviewer){
+        CodeReviewAllocation codeReviewAllocation = new CodeReviewAllocation(this, requester, codeReviewer);
+        this.codeReviewAllocations.add(codeReviewAllocation);
+        return codeReviewAllocation;
+    }
+
+    public List<CodeReviewAllocation> createCodeReview(User requester, List<User> codeReviewers){
+        List<CodeReviewAllocation> newCodeReviewAllocations = new ArrayList<CodeReviewAllocation>();
+        for (User codeReviewer : codeReviewers){
+            CodeReviewAllocation codeReviewAllocation = this.createCodeReview(requester, codeReviewer);
+            newCodeReviewAllocations.add(codeReviewAllocation);
+        }
+        return newCodeReviewAllocations;
     }
 
     public List<User> getCodeReviewers(){
         List<User> codeReviewers = new ArrayList<User>();
-        for (CodeReview codeReview : codeReviews){
-            codeReviewers.add(codeReview.getCodeReviewer());
+        for (CodeReviewAllocation codeReviewAllocation : codeReviewAllocations){
+            codeReviewers.add(codeReviewAllocation.getCodeReviewer());
         }
         return codeReviewers;
     }
+
     public void removeCodeReviwer(User developer, User nonDeveloper) {
-        for (CodeReview cr: codeReviews){
+        for (CodeReviewAllocation cr: codeReviewAllocations){
             if (cr.getCodeReviewer().equals(nonDeveloper)){
-                codeReviews.remove(cr);
+                codeReviewAllocations.remove(cr);
                 cr.getCodeReviewer().decrementReviewCount();
+                cr.remover(developer);
                 return;
             }
         }
     }
 
-    public void randomAllocateReviewer() {
-        Random rand = new Random();
-        MockDatabasePersistence instance = MockDatabasePersistence.getInstance();
-        List<User> allUsers = instance.getAllCodeReviewers();
-        User codeReviewer = allUsers.get(rand.nextInt(allUsers.size()));
-        new CodeReview(this, null, codeReviewer);
+    public void removeCodeReviwer(User developer, List<User> codeReviewers) {
+        for (User u: codeReviewers){
+            removeCodeReviwer(developer, u);
+        }
     }
-
 }

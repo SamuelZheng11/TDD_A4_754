@@ -23,7 +23,7 @@ public class MockCommandLineInterface implements ICommandLineInterface {
         } else if (branch == "lintAutoFixBranch") {
             return new MockBufferedReader(2);
         } else {
-            return null;
+            return new MockBufferedReader(3);
         }
     }
 }

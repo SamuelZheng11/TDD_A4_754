@@ -18,12 +18,16 @@ public class AutomationUnitTest {
      * Requirement #: 5
      */
     @Test
-    public void noLintingNeededToPassTest() {
+    public void shouldPerformLintingWithNoLintActionsTakenTest() {
+        //Given
         CommandLineRunner cmd= new CommandLineRunner();
         cmd.setCommand("npm run lint;");
+
+        //When
         IBranch branch = new GitBranch("noLintNeededBranch", new GitCommit[]{});
         List<String> results = cmd.runOnBranch(branch);
 
+        //Then
         for (String result: results) {
             if (result.equals("Linter completed with no linting errors")) {
                 return;
@@ -37,12 +41,16 @@ public class AutomationUnitTest {
      * Requirement #: 5
      */
     @Test
-    public void linterAutomaticallyFixesErorrsTest() {
+    public void shouldPerformAutomaticLintingToFixingErorrsTest() {
+        //Given
         CommandLineRunner cmd = new CommandLineRunner();
         cmd.setCommand("npm run lint");
+
+        //When
         IBranch branch = new GitBranch("lintAutoFixBranch", new GitCommit[]{});
         List<String> results = cmd.runOnBranch(branch);
 
+        //Then
         if (results.get(0) != "Fixed 2 error(s) in app/misc/repo.ts") {
             fail();
         }
@@ -56,12 +64,16 @@ public class AutomationUnitTest {
      * Requirement #: 5
      */
     @Test
-    public void LinterFailsAndRequiresFurtherAssistanceTest() {
+    public void shouldFailToLintCompleteLintFullyAndRequireFurtherAssistanceTest() {
+        //When
         CommandLineRunner cmd = new CommandLineRunner();
         cmd.setCommand("npm run lint");
+
+        //When
         IBranch branch = new GitBranch("linterRequiresFurtherAssistanceBranch", new GitCommit[]{});
         List<String> results = cmd.runOnBranch(branch);
 
+        //Then
         for (String result: results) {
             if (result.equals("ERROR: app/misc/router.ts:116:1 - non-arrow functions are forbidden")) {
                 return;
@@ -75,25 +87,34 @@ public class AutomationUnitTest {
      * Requirement #: 5
      */
     @Test
-    public void linterAttemptsToLintAUnexpectedBranchTest() {
+    public void shouldReturnEmptyListWhenLinterIsAppliedToAnUnexpectedBranchTest() {
+        //Given
         CommandLineRunner cmd = new CommandLineRunner();
         cmd.setCommand("npm run lint");
+
+        //When
         IBranch branch = new GitBranch("unexpectedBranch", new GitCommit[]{});
         List<String> results = cmd.runOnBranch(branch);
 
-        assertNull(results);
+        //Then
+        if (results.size() == 0) {
+            return;
+        }
     }
 
     /**
      * Requirement #: 6
      */
     @Test
-    public void AutomatedCodeInspectionNoDefectsDetectedTest() {
+    public void shouldAutomaticallyPerformCodeInspectionNoDefectsFoundTest() {
+        //Given
         IBranch branch = new GitBranch("allPassMLCheckBranch", new GitCommit[]{});
-        MachineLearningModelHandler mlmp = new MachineLearningModelHandler();
 
+        //When
+        MachineLearningModelHandler mlmp = new MachineLearningModelHandler();
         Map<List<Integer>, AnomalyType> anomalyTypeMap = mlmp.identifyAnomalyLines(branch);
 
+        //Then
         if (anomalyTypeMap.size() != 0) {
             fail();
         }
@@ -105,12 +126,15 @@ public class AutomationUnitTest {
      * Requirement #: 6
      */
     @Test
-    public void AutomatedCodeInspectionDetectedSmallDefectsTest() {
+    public void shouldAutomaticallyPerformCodeInspectionAndDetectSmallDefectsTest() {
+        //Given
         IBranch branch = new GitBranch("failSmallDefectsMLCheckBranch", new GitCommit[]{});
-        MachineLearningModelHandler mlmp = new MachineLearningModelHandler();
 
+        //When
+        MachineLearningModelHandler mlmp = new MachineLearningModelHandler();
         Map<List<Integer>, AnomalyType> anomalyTypeMap = mlmp.identifyAnomalyLines(branch);
 
+        //Then
         for (List<Integer> lineNumberSet: anomalyTypeMap.keySet()) {
             if (anomalyTypeMap.get(lineNumberSet) == AnomalyType.SmallDefect) {
                 return;
@@ -124,12 +148,15 @@ public class AutomationUnitTest {
      * Requirement #: 6
      */
     @Test
-    public void AutomatedCodeInspectionDetectedMaliciousCodeBlocksTest() {
+    public void shouldAutomaticallyPerformCodeInspectionAndDetectMaliciousCodeBlocksTest() {
+        //Given
         IBranch branch = new GitBranch("failMaliciousCodeBlocksMLCheckBranch", new GitCommit[]{});
-        MachineLearningModelHandler mlmp = new MachineLearningModelHandler();
 
+        //When
+        MachineLearningModelHandler mlmp = new MachineLearningModelHandler();
         Map<List<Integer>, AnomalyType> anomalyTypeMap = mlmp.identifyAnomalyLines(branch);
 
+        //Then
         for (List<Integer> lineNumberSet: anomalyTypeMap.keySet()) {
             if (anomalyTypeMap.get(lineNumberSet) == AnomalyType.MaliciousCodeBlock) {
                 return;
@@ -143,12 +170,15 @@ public class AutomationUnitTest {
      * Requirement #: 6
      */
     @Test
-    public void AutomatedCodeInspectionDetectedBadCodeSmellsTest() {
+    public void shouldAutomaticallyPerformCodeInspectionAndDetectBadCodeSmellsTest() {
+        //Given
         IBranch branch = new GitBranch("failBadCodeSmellsMLCheckBranch", new GitCommit[]{});
-        MachineLearningModelHandler mlmp = new MachineLearningModelHandler();
 
+        //When
+        MachineLearningModelHandler mlmp = new MachineLearningModelHandler();
         Map<List<Integer>, AnomalyType> anomalyTypeMap = mlmp.identifyAnomalyLines(branch);
 
+        //Then
         for (List<Integer> lineNumberSet: anomalyTypeMap.keySet()) {
             if (anomalyTypeMap.get(lineNumberSet) == AnomalyType.BadCodeSmell) {
                 return;
@@ -159,20 +189,42 @@ public class AutomationUnitTest {
     }
 
     /**
+     * Requirement #: 6
+     */
+    @Test
+    public void shouldReturnNullMapWhenAutomaticCodeInspectionIsAppliedToUnexpectedBranchTest() {
+        //Given
+        IBranch branch = new GitBranch("unexpectedBranch", new GitCommit[]{});
+
+        //When
+        MachineLearningModelHandler mlmp = new MachineLearningModelHandler();
+        Map<List<Integer>, AnomalyType> anomalyTypeMap = mlmp.identifyAnomalyLines(branch);
+
+        //Then
+        if (anomalyTypeMap != null) {
+            fail();
+        }
+    }
+
+    /**
      * Requirement #: 7
      */
     @Test
-    public void TestSuccessfulGenerateCodeAbstractionsTest() {
+    public void shouldCorrectlyMatchSuccessfullyGeneratedCodeAbstractionsToActualCodeAbstractionTest() {
+        //Given
         IAbstractionExtension ae = new MockAbstractionExtension();
         IBranch branch = new GitBranch("passCodeAbstractionGenerationBranch", new GitCommit[]{});
-        ae.setBranch(branch);
-        String generatedFileName = ae.generateCodeAbstraction();
 
         String expectedFileName = "MockAutoGeneratedCodeAbstractionPass.txt";
         String expectedCodeAbstractionAsAString = "";
         String actualCodeAbstractionAsAString = "";
         Stream<String> lines;
 
+        //When
+        ae.setBranch(branch);
+        String generatedFileName = ae.generateCodeAbstraction();
+
+        //Then
         try {
             Path path = Paths.get(getClass().getClassLoader().getResource(expectedFileName).toURI());
             lines = Files.lines(path);
@@ -201,17 +253,21 @@ public class AutomationUnitTest {
      * Requirement #: 7
      */
     @Test
-    public void TestGenerateCodeAbstractionUnexpectedLineInGeneratedFileTest() {
+    public void shouldBeAbleToIdentifyADifferenceInLinesInGenerateCodeAbstractionAndActualCodeAbstractionTest() {
+        //Given
         IAbstractionExtension ae = new MockAbstractionExtension();
         IBranch branch = new GitBranch("failCodeAbstractionGenerationBranch", new GitCommit[]{});
-        ae.setBranch(branch);
-        String generatedFileName = ae.generateCodeAbstraction();
 
         String expectedFileName = "MockAutoGeneratedCodeAbstractionPass.txt";
         String expectedCodeAbstractionAsAString = "";
         String actualCodeAbstractionAsAString = "";
         Stream<String> lines;
 
+        //When
+        ae.setBranch(branch);
+        String generatedFileName = ae.generateCodeAbstraction();
+
+        //Then
         try {
             Path path = Paths.get(getClass().getClassLoader().getResource(expectedFileName).toURI());
             lines = Files.lines(path);
@@ -234,5 +290,22 @@ public class AutomationUnitTest {
         }
 
         assertNotEquals(expectedCodeAbstractionAsAString, actualCodeAbstractionAsAString);
+    }
+
+    /**
+     * Requirement #: 7
+     */
+    @Test
+    public void shouldNotBeAbleToGenerateACodeAbstractionToAnUnexpectedBranchTest() {
+        //Given
+        IAbstractionExtension ae = new MockAbstractionExtension();
+        IBranch branch = new GitBranch("unexpectedBranch", new GitCommit[]{});
+
+        //When
+        ae.setBranch(branch);
+        String generatedFileName = ae.generateCodeAbstraction();
+
+        //Then
+        assertNull(generatedFileName);
     }
 }

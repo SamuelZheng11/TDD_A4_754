@@ -16,9 +16,12 @@ public class ReviewerPersistence {
     private MongoDatabase mongoDatabase;
     private MongoCollection<Document> mongoCollection;
 
-    public final static String FIRST_NAME_KEY = "FIRST_NAME";
-    public final static String REVIEW_COUNT_KEY = "REVIEW_COUNT";
-    public final static String USERTYPE_KEY = "USERTYPE";
+    final static String FIRST_NAME_KEY = "FIRST_NAME";
+    final static String REVIEW_COUNT_KEY = "REVIEW_COUNT";
+    final static String USERTYPE_KEY = "USERTYPE";
+
+    private List<User> reviewers = new ArrayList<User>();
+
 
     private static ReviewerPersistence instance;
 
@@ -32,13 +35,13 @@ public class ReviewerPersistence {
     }
 
     public static ReviewerPersistence getInstance(){
-        if (instance==null){
+        if (instance == null){
             instance = new ReviewerPersistence();
         }
         return instance;
     }
 
-    public void addReviewCount(User codeReviewer){
+    public void updateReviewCount(User codeReviewer){
         mongoCollection.updateOne(eq(FIRST_NAME_KEY, codeReviewer.getName()), new Document(FIRST_NAME_KEY, codeReviewer.getName()).append(REVIEW_COUNT_KEY, codeReviewer.getReviewCount()).append(USERTYPE_KEY, UserType.NonDeveloper));
     }
 
@@ -51,6 +54,26 @@ public class ReviewerPersistence {
             reviewCount = (Integer)document.get(REVIEW_COUNT_KEY);
         }
         return reviewCount;
+    }
+
+    public List<User> getAllCodeReviewers() {
+        if(reviewers.size()==0) {
+            FindIterable<Document> documents = mongoCollection.find();
+            MongoCursor<Document> iterator = documents.iterator();
+            while (iterator.hasNext()) {
+                Document document = iterator.next();
+
+                String userName = (String) document.get(FIRST_NAME_KEY);
+                int reviewCount = (Integer) document.get(REVIEW_COUNT_KEY);
+                UserType ut = (UserType) document.get(USERTYPE_KEY);
+
+                if (ut == UserType.NonDeveloper) {
+                    User user = new User(userName, ut, reviewCount);
+                    reviewers.add(user);
+                }
+            }
+        }
+        return reviewers;
     }
 
 }
