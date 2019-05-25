@@ -24,6 +24,15 @@ public class User {
     public String getName(){
         return name;
     }
+    //module 4
+    
+    //requirement 11
+    //Final comments received from the automated tool
+    public String AbstractResult_Recieved_fromTool()
+	{
+    	
+	}
+    
     
  
    
