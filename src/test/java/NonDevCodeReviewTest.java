@@ -94,7 +94,7 @@ public class NonDevCodeReviewTest {
 		Mockito.when(network_interface.Auto_ReviewSent(nonDeveloper,resultreview_sent)).thenReturn(MessageOnSent);
 		
 		//when
-		Mockito.when(network_interface.Auto_ReviewRecieved()).thenReturn("please add better variable names");
+		Mockito.when(network_interface.Auto_ReviewRecieved()).thenReturn(resultreview_sent);
 		
 		//then
 		Mockito.when(nonDeveloper.AbstractResult_Recieved_fromTool()).thenReturn("please add better variable names");
