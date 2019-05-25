@@ -14,4 +14,9 @@ public class MockAbstractionExtension implements IAbstractionExtension {
             return null;
         }
     }
+    //module 4
+    public String fetchAbstraction_fromTool()
+    {
+    	return "";
+    }
 }

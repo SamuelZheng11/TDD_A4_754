@@ -31,7 +31,7 @@ public class User {
     //Final comments received from the automated tool
     public String AbstractResult_Recieved_fromTool()
 	{
-    	return abstractionextension.generateCodeAbstraction();
+    	return abstractionextension.fetchAbstraction_fromTool();
 	}
     
     
