@@ -124,7 +124,7 @@ public class NonDevCodeReviewTest {
 		}
 		//Requirement 13
 		@Test
-		public void Test_Send_ChangedReview_To_DevTool()
+		public void Should_Send_ChangedReview_To_DevTool()
 		{   //given
 			String a= "please add better variable names and ensure 4 spaces for format.";
 			when(nonDeveloper.NonDev_AddComment("please add better variable names"," and ensure 4 spaces for format.")).thenReturn(a);
