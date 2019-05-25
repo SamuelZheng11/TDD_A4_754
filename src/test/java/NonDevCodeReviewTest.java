@@ -49,9 +49,7 @@ public class NonDevCodeReviewTest {
 	}
 	//Requirement 11
 	@Test
-	public void Should_establish_network_connection_success() {
-		
-				
+	public void Should_establish_network_connection_success() {		
 		
 		//given
 		String MessageOnConnection="Network Connection Successful";
