@@ -64,10 +64,7 @@ public class NonDevCodeReviewTest {
 				
 	}
 	@Test
-	public void Should_establish_network_connection_fail() {
-		developer_side_tool= mock(Developer_Side_Tool.class);
-		network_interface=mock(Network_Interface.class);
-				
+	public void Should_establish_network_connection_fail() {				
 		
 		//given
 		String MessageOnConnection="Network Connection error";
@@ -79,6 +76,26 @@ public class NonDevCodeReviewTest {
 		
 		//then
 		assertEquals(MessageOnConnection,checkMessage);
+				
+	}
+	@Test
+	public void Should_Get_InitialReview_viaNetwork()
+	{
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            		
+		//given 
+		String resultreview_sent = new String("please add better variable names");
+		Mockito.when(developer_side_tool.Changes_ByTool_Recieved()).thenReturn(resultreview_sent);
+		
+		String MessageOnSent= new String("Sent via Network to Non Developer");
+		Mockito.when(network_interface.Auto_ReviewSent(nonDeveloper,resultreview_sent)).thenReturn(MessageOnSent);
+		
+		//when
+		Mockito.when(network_interface.Auto_ReviewRecieved()).thenReturn("please add better variable names");
+		
+		//then
+		Mockito.when(nonDeveloper.AbstractResult_Recieved_fromTool()).thenReturn("please add better variable names");
+		String resultreview_recieve = nonDeveloper.AbstractResult_Recieved_fromTool();
+		assertEquals(resultreview_sent,resultreview_recieve);
 				
 	}
 	
