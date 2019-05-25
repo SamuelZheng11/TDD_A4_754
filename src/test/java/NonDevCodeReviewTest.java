@@ -158,7 +158,7 @@ public class NonDevCodeReviewTest {
 					assertEquals(addFinalComment,dev_finalcomment);
 		}
 		@Test
-	    public void Test_Dev_ApproveReview()
+	    public void ShouldBe__ApprovedByDev()
 	    {
 			//given
 			Mockito.when(developer.AbstractResult_FinalChange_fromDev()).thenReturn("please add better variable names and ensure 4 spaces for format.The review looks good");

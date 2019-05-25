@@ -63,7 +63,6 @@ public class User {
     }
     //Final Developer Approval
     public String verdict;
-
     public String FinalVeredict(String str,String verdict)
     {
     	if(verdict=="yes")
