@@ -102,5 +102,23 @@ public class NonDevCodeReviewTest {
 		assertEquals(resultreview_sent,resultreview_recieve);
 				
 	}
+	//Requirement 12
+		@Test 
+		public void Test_High_Level_Review()
+		{	
+			//given 
+			Mockito.when(nonDeveloper.AbstractResult_Recieved_fromTool()).thenReturn("please add better variable names");
+			String str= nonDeveloper.AbstractResult_Recieved_fromTool();
+			String review_msg_add = new String(" ensure 4 spaces for format.");
+			String a = (str+review_msg_add);
+			
+			//when 
+			when(nonDeveloper.NonDev_AddComment(str,review_msg_add)).thenReturn(a);
+			String addComment= nonDeveloper.NonDev_AddComment(str,review_msg_add);
+
+			//then
+			assertEquals(addComment,a);
+		 
+		}
 	
 }
