@@ -140,5 +140,22 @@ public class NonDevCodeReviewTest {
 			assertEquals(nondev_resultfetched,a);
 
 		}
+		@Test
+		public void Should_Allow_DeveloperToModify_NonDevReview()
+		{
+					//given 
+					Mockito.when(developer.AbstractResult_Recieved_fromNonDev()).thenReturn("please add better variable names and ensure 4 spaces for format.");
+					String strOriginal=developer.AbstractResult_Recieved_fromNonDev();
+					
+					//when
+					String dev_msg_add = new String("The review looks good");
+					String finalReview = strOriginal+dev_msg_add; 
+					
+					//then
+					String dev_finalcomment="please add better variable names and ensure 4 spaces for format.The review looks good";
+					when(developer.Dev_AddComment(strOriginal,dev_msg_add)).thenReturn(finalReview);
+					String addFinalComment= developer.Dev_AddComment(strOriginal,dev_msg_add);
+					assertEquals(addFinalComment,dev_finalcomment);
+		}
 		
 }
