@@ -1,8 +1,14 @@
 package testsuits.integration;
 
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
 import junit.framework.TestCase;
+import org.bson.Document;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import static developer.ReviewerPersistence.*;
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -32,8 +38,8 @@ public class CodeReviewDatabasePersistenceTest {
     private ReviewerPersistence rp;
 
     private MongoClient mongoClient;
-    private String usersDBName;
-    private String usersCollectionName;
+    private String usersDBName = "users-db";
+    private String usersCollectionName = "users-collection";
     private GithubApi _github;
 
     @Before
@@ -42,14 +48,16 @@ public class CodeReviewDatabasePersistenceTest {
         //Given
 
         mongoClient = new MongoClient("localhost", 27017);
-        usersDBName = "users-db";
-        usersCollectionName = "users-collection";
 
+        MongoDatabase mongoDatabase = this.mongoClient.getDatabase(usersDBName);
+        MongoCollection<Document> mongoCollection = mongoDatabase.getCollection(usersCollectionName);
+        Document d = new Document(FIRST_NAME_KEY, nonDeveloper.getName()).append(REVIEW_COUNT_KEY, nonDeveloper.getReviewCount()).append(USERTYPE_KEY, UserType.NonDeveloper.ordinal());
+        mongoCollection.insertOne(d);
         rp = ReviewerPersistence.getInstance();
         rp.addDatabase(mongoClient, usersDBName, usersCollectionName);
 
         _github = new MockGithubModule();
-
+        
     }
 
     @Test
@@ -86,7 +94,7 @@ public class CodeReviewDatabasePersistenceTest {
     }
 
     @Test
-    public void shouldAllowDeveloperToRemoveCodeReviewer() {
+    public void shouldUpdateDatabaseWhenADeveloperAllowDeveloperToRemoveCodeReviewer() {
 
         //Given
         int initialReviewCount = nonDeveloper.getReviewCount();
@@ -106,6 +114,6 @@ public class CodeReviewDatabasePersistenceTest {
         List<User> codeReviewers = mockPullRequest.getCodeReviewers();
         assertFalse(codeReviewers.contains(nonDeveloper));
         TestCase.assertEquals(initialReviewCount,nonDeveloper.getReviewCount());
-        
+
     }
 }
