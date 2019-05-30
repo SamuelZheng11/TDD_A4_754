@@ -10,11 +10,11 @@ public class DevelopersSideTool {
 		return networkinterface.CreateConnection();
 	
 	}
-	public String Changes_ByTool_Recieved()
+	public String changesByToolRecieved()
 	{
 		return abstractionextension.fetchAbstraction_fromTool();
 	}
-	public String Changes_ByReviewer_Recieved(String str)
+	public String changesByReviewerRecieved(String str)
 	{
 		return abstractionextension.generateReviewerAbstraction();
 	}

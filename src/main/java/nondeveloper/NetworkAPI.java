@@ -6,10 +6,10 @@ public interface NetworkAPI {
 	//requirement 11
 		String CreateConnection();
 	//requirement 12
-		String Auto_ReviewSent(User nonDeveloper, String str1);
-		String Auto_ReviewRecieved();
+		String autoReviewSent(User nonDeveloper, String str1);
+		String autoReviewRecieved();
 	//requirement 13
-		String NonDev_ReviewSent(User developer, String str2);
-		String NonDev_ReviewRecieved();
+		String nonDevReviewSent(User developer, String str2);
+		String nonDevReviewRecieved();
 
 }

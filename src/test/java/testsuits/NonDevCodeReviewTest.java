@@ -19,16 +19,16 @@ import static org.junit.Assert.assertTrue;
 
 public class NonDevCodeReviewTest {
 	
-	private DevelopersSideTool developer_side_tool= new DevelopersSideTool();
-	private NetworkAPI network_interface;
+	private DevelopersSideTool developerSideTool = new DevelopersSideTool();
+	private NetworkAPI networkInterface;
 	private User nonDeveloper = new User("", UserType.NonDeveloper);
 	private User developer = new User("", UserType.NonDeveloper);	
 
 
 	@Before
-	public void Setup() {	 
-	developer_side_tool= mock(DevelopersSideTool.class);
-	network_interface=mock(NetworkAPI.class);
+	public void Setup() {
+	developerSideTool = mock(DevelopersSideTool.class);
+	networkInterface =mock(NetworkAPI.class);
 	nonDeveloper= mock(User.class);
     developer= mock(User.class);
 
@@ -36,119 +36,119 @@ public class NonDevCodeReviewTest {
 	}
 	//Requirement 11
 	@Test
-	public void Should_establish_network_connection_success() {		
+	public void ShouldEstablishNetworkConnectionSuccess() {
 		
 		//given
-		String MessageOnConnection="Network Connection Successful";
-		Mockito.when(network_interface.CreateConnection()).thenReturn(MessageOnConnection);
+		String MessageOnConnection = "Network Connection Successful";
+		Mockito.when(networkInterface.CreateConnection()).thenReturn(MessageOnConnection);
 		
 		//when
-		Mockito.when(developer_side_tool.ConnectionEstablished()).thenReturn("Network Connection Successful");
-		String checkMessage = developer_side_tool.ConnectionEstablished();
+		Mockito.when(developerSideTool.ConnectionEstablished()).thenReturn("Network Connection Successful");
+		String checkMessage = developerSideTool.ConnectionEstablished();
 		
 		//then
-		assertEquals(MessageOnConnection,checkMessage);
+		assertEquals(MessageOnConnection, checkMessage);
 				
 	}
 	@Test
-	public void Should_establish_network_connection_fail() {				
+	public void ShouldEstablishNetworkConnectionFail() {
 		
 		//given
 		String MessageOnConnection="Network Connection error";
-		Mockito.when(network_interface.CreateConnection()).thenReturn(MessageOnConnection);
+		Mockito.when(networkInterface.CreateConnection()).thenReturn(MessageOnConnection);
 		
 		//when
-		Mockito.when(developer_side_tool.ConnectionEstablished()).thenReturn("Network Connection error");
-		String checkMessage = developer_side_tool.ConnectionEstablished();
+		Mockito.when(developerSideTool.ConnectionEstablished()).thenReturn("Network Connection error");
+		String checkMessage = developerSideTool.ConnectionEstablished();
 		
 		//then
-		assertEquals(MessageOnConnection,checkMessage);
+		assertEquals(MessageOnConnection, checkMessage);
 				
 	}
 	@Test
-	public void Should_Get_InitialReview_viaNetwork()
+	public void ShouldGetInitialReviewViaNetwork()
 	{
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             		
 		//given 
-		String resultreview_sent = new String("please add better variable names");
-		Mockito.when(developer_side_tool.Changes_ByTool_Recieved()).thenReturn(resultreview_sent);
+		String resultReviewSent = new String("please add better variable names");
+		Mockito.when(developerSideTool.changesByToolRecieved()).thenReturn(resultReviewSent);
 		
 		String MessageOnSent= new String("Sent via Network to Non Developer");
-		Mockito.when(network_interface.Auto_ReviewSent(nonDeveloper,resultreview_sent)).thenReturn(MessageOnSent);
+		Mockito.when(networkInterface.autoReviewSent(nonDeveloper,resultReviewSent)).thenReturn(MessageOnSent);
 		
 		//when
-		Mockito.when(network_interface.Auto_ReviewRecieved()).thenReturn(resultreview_sent);
+		Mockito.when(networkInterface.autoReviewRecieved()).thenReturn(resultReviewSent);
 		
 		//then
-		Mockito.when(nonDeveloper.AbstractResult_Recieved_fromTool()).thenReturn("please add better variable names");
-		String resultreview_recieve = nonDeveloper.AbstractResult_Recieved_fromTool();
-		assertEquals(resultreview_sent,resultreview_recieve);
+		Mockito.when(nonDeveloper.abstractResultRecievedFromTool()).thenReturn("please add better variable names");
+		String resultReviewRecieved = nonDeveloper.abstractResultRecievedFromTool();
+		assertEquals(resultReviewSent, resultReviewRecieved);
 				
 	}
 	//Requirement 12
 		@Test 
-		public void Should_Perform_HighLevel_Review_ByNonDev()
+		public void ShouldPerformHighLevelReviewByNonDev()
 		{	
 			//given 
-			Mockito.when(nonDeveloper.AbstractResult_Recieved_fromTool()).thenReturn("please add better variable names");
-			String str= nonDeveloper.AbstractResult_Recieved_fromTool();
-			String review_msg_add = new String(" ensure 4 spaces for format.");
-			String a = (str+review_msg_add);
+			Mockito.when(nonDeveloper.abstractResultRecievedFromTool()).thenReturn("please add better variable names");
+			String str = nonDeveloper.abstractResultRecievedFromTool();
+			String reviewMsgAdd = new String(" ensure 4 spaces for format.");
+			String a = (str+reviewMsgAdd);
 			
 			//when 
-			when(nonDeveloper.NonDev_AddComment(str,review_msg_add)).thenReturn(a);
-			String addComment= nonDeveloper.NonDev_AddComment(str,review_msg_add);
+			when(nonDeveloper.nonDevAddComment(str,reviewMsgAdd)).thenReturn(a);
+			String addComment = nonDeveloper.nonDevAddComment(str,reviewMsgAdd);
 
 			//then
-			assertEquals(addComment,a);	 
+			assertEquals(addComment, a);
 		}
 		//Requirement 13
 		@Test
-		public void Should_Send_ChangedReview_To_DevTool()
+		public void ShouldSendChangedReviewToDevTool()
 		{   //given
 			String a= "please add better variable names and ensure 4 spaces for format.";
-			when(nonDeveloper.NonDev_AddComment("please add better variable names"," and ensure 4 spaces for format.")).thenReturn(a);
+			when(nonDeveloper.nonDevAddComment("please add better variable names"," and ensure 4 spaces for format.")).thenReturn(a);
 			
 			//when
 			String MessageOnSent= new String("Sent via Network to Developer");
-			Mockito.when(network_interface.NonDev_ReviewSent(developer,a)).thenReturn(MessageOnSent);
-			Mockito.when(network_interface.NonDev_ReviewRecieved()).thenReturn(a);
+			Mockito.when(networkInterface.nonDevReviewSent(developer,a)).thenReturn(MessageOnSent);
+			Mockito.when(networkInterface.nonDevReviewRecieved()).thenReturn(a);
 			
 			//then
-			Mockito.when(developer_side_tool.Changes_ByReviewer_Recieved(a)).thenReturn("please add better variable names and ensure 4 spaces for format.");
-			String nondev_resultfetched = developer_side_tool.Changes_ByReviewer_Recieved(a);
-			assertEquals(nondev_resultfetched,a);
+			Mockito.when(developerSideTool.changesByReviewerRecieved(a)).thenReturn("please add better variable names and ensure 4 spaces for format.");
+			String nonDevResultFetched = developerSideTool.changesByReviewerRecieved(a);
+			assertEquals(nonDevResultFetched, a);
 
 		}
 		@Test
-		public void Should_Allow_DeveloperToModify_NonDevReview()
+		public void ShouldAllowDeveloperToModifyNonDevReview()
 		{
 					//given 
-					Mockito.when(developer.AbstractResult_Recieved_fromNonDev()).thenReturn("please add better variable names and ensure 4 spaces for format.");
-					String strOriginal=developer.AbstractResult_Recieved_fromNonDev();
+					Mockito.when(developer.abstractResultRecievedFromNonDev()).thenReturn("please add better variable names and ensure 4 spaces for format.");
+					String strOriginal = developer.abstractResultRecievedFromNonDev();
 					
 					//when
-					String dev_msg_add = new String("The review looks good");
-					String finalReview = strOriginal+dev_msg_add; 
+					String devMsgAdd = new String("The review looks good");
+					String finalReview = strOriginal + devMsgAdd;
 					
 					//then
-					String dev_finalcomment="please add better variable names and ensure 4 spaces for format.The review looks good";
-					when(developer.Dev_AddComment(strOriginal,dev_msg_add)).thenReturn(finalReview);
-					String addFinalComment= developer.Dev_AddComment(strOriginal,dev_msg_add);
-					assertEquals(addFinalComment,dev_finalcomment);
+					String devFinalComment = "please add better variable names and ensure 4 spaces for format.The review looks good";
+					when(developer.devAddComment(strOriginal,devMsgAdd)).thenReturn(finalReview);
+					String addFinalComment = developer.devAddComment(strOriginal,devMsgAdd);
+					assertEquals(addFinalComment,devFinalComment);
 		}
 		@Test
-	    public void ShouldBe__ApprovedByDev()
+	    public void ShouldBeApprovedByDev()
 	    {
 			//given
-			Mockito.when(developer.AbstractResult_FinalChange_fromDev()).thenReturn("please add better variable names and ensure 4 spaces for format.The review looks good");
-			String final_review= developer.AbstractResult_FinalChange_fromDev();
+			Mockito.when(developer.abstractResultFinalChangeFromDev()).thenReturn("please add better variable names and ensure 4 spaces for format.The review looks good");
+			String finalReview= developer.abstractResultFinalChangeFromDev();
 			//when
 			String verdict="yes";
-			Mockito.when(developer.FinalVeredict(final_review,verdict)).thenReturn("approved");
-			String Dev_final_review=developer.FinalVeredict(final_review,verdict);
+			Mockito.when(developer.FinalVeredict(finalReview,verdict)).thenReturn("approved");
+			String devFinalReview = developer.FinalVeredict(finalReview,verdict);
 			//then
-			assertEquals(Dev_final_review,"approved");
+			assertEquals(devFinalReview,"approved");
 	    }
 
 		
