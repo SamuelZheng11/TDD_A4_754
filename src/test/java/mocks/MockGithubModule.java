@@ -1,5 +1,6 @@
 package mocks;
 
+import github.*;
 import testsuits.GithubUnitTest;
 
 import java.util.ArrayList;

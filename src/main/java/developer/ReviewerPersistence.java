@@ -20,9 +20,9 @@ public class ReviewerPersistence {
     private MongoDatabase mongoDatabase;
     private MongoCollection<Document> mongoCollection;
 
-    final static String FIRST_NAME_KEY = "FIRST_NAME";
-    final static String REVIEW_COUNT_KEY = "REVIEW_COUNT";
-    final static String USERTYPE_KEY = "USERTYPE";
+    public final static String FIRST_NAME_KEY = "FIRST_NAME";
+    public final static String REVIEW_COUNT_KEY = "REVIEW_COUNT";
+    public final static String USERTYPE_KEY = "USERTYPE";
 
     private List<User> reviewers = new ArrayList<User>();
 

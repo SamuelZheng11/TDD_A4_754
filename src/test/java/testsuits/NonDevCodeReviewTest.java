@@ -1,5 +1,9 @@
 package testsuits;
 
+import github.User;
+import github.UserType;
+import nondeveloper.DevelopersSideTool;
+import nondeveloper.NetworkAPI;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -15,16 +19,16 @@ import static org.junit.Assert.assertTrue;
 
 public class NonDevCodeReviewTest {
 	
-	private Developers_Side_Tool developer_side_tool= new Developers_Side_Tool();
-	private Network_API network_interface;
-	private User nonDeveloper = new User("", UserType.NonDeveloper);	
+	private DevelopersSideTool developer_side_tool= new DevelopersSideTool();
+	private NetworkAPI network_interface;
+	private User nonDeveloper = new User("", UserType.NonDeveloper);
 	private User developer = new User("", UserType.NonDeveloper);	
 
 
 	@Before
 	public void Setup() {	 
-	developer_side_tool= mock(Developers_Side_Tool.class);
-	network_interface=mock(Network_API.class);
+	developer_side_tool= mock(DevelopersSideTool.class);
+	network_interface=mock(NetworkAPI.class);
 	nonDeveloper= mock(User.class);
     developer= mock(User.class);
 

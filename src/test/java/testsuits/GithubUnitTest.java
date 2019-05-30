@@ -1,5 +1,7 @@
 package testsuits;
 
+import github.*;
+import mocks.MockGithubModule;
 import org.junit.Before;
 import org.junit.Test;
 
