@@ -61,7 +61,7 @@ public class ReviewerPersistence {
         FindIterable<Document> documents = mongoCollection.find(new Document(FIRST_NAME_KEY, codeReviewer.getName()));
         MongoCursor<Document> iterator = documents.iterator();
         int reviewCount = -1;
-        while (iterator.hasNext()) {
+        if (iterator.hasNext()) {
             Document document = iterator.next();
             reviewCount = (Integer)document.get(REVIEW_COUNT_KEY);
         }

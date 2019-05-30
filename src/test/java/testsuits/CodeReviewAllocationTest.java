@@ -128,10 +128,10 @@ public class CodeReviewAllocationTest {
         //Given
         PullRequest mockPullRequest = Mockito.spy(_github.createPullRequest("Test developer can add code reviewers", sourceBranch, targetBranch));
         int initialReviewCount = nonDeveloper.getReviewCount();
+        mockDatabaseBehaviourWhenAddReviewCountIsCalled(nonDeveloper);
 
         //When
         CodeReviewAllocation codeReviewAllocation = mockPullRequest.createCodeReview(developer, nonDeveloper);
-        mockDatabaseBehaviourWhenAddReviewCountIsCalled(nonDeveloper);
 
         //Then
         List<User> codeReviewers = mockPullRequest.getCodeReviewers();
@@ -149,12 +149,14 @@ public class CodeReviewAllocationTest {
         //Given
         PullRequest mockPullRequest = Mockito.spy(_github.createPullRequest("Test developer can remove code reviewers", sourceBranch, targetBranch));
         int initialReviewCount = nonDeveloper.getReviewCount();
-
-        CodeReviewAllocation codeReviewAllocation = mockPullRequest.createCodeReview(developer, nonDeveloper);
         mockDatabaseBehaviourWhenAddReviewCountIsCalled(nonDeveloper);
 
+        CodeReviewAllocation codeReviewAllocation = mockPullRequest.createCodeReview(developer, nonDeveloper);
+
         //check that the database is initially correct and the count has actually been increased
+        mockDatabaseBehaviourWhenAddReviewCountIsCalled(nonDeveloper);
         int databaseReviewCount = spiedRPInstance.getReviewCountForUser(nonDeveloper);
+
         TestCase.assertEquals(nonDeveloper.getReviewCount(), databaseReviewCount);
         TestCase.assertEquals(initialReviewCount+1,nonDeveloper.getReviewCount());
 
