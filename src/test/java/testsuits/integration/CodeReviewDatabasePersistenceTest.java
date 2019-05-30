@@ -1,5 +1,6 @@
 package testsuits.integration;
 
+import junit.framework.TestCase;
 import org.junit.Before;
 import org.junit.Test;
 import static junit.framework.TestCase.assertEquals;
@@ -66,7 +67,7 @@ public class CodeReviewDatabasePersistenceTest {
     }
 
     @Test
-    public void shouldUpdateDatabaseWhen(){
+    public void shouldUpdateDatabaseWhenADeveloperAddsACodeReviewerForCodeReview(){
         //Given
 
         PullRequest mockPullRequest = _github.createPullRequest("Test developer can add code reviewers", sourceBranch, targetBranch);
@@ -82,5 +83,29 @@ public class CodeReviewDatabasePersistenceTest {
         assertEquals(initialReviewCount+1,nonDeveloper.getReviewCount());
 
         System.out.println("User Code Review Count save action perfomed!!!");
+    }
+
+    @Test
+    public void shouldAllowDeveloperToRemoveCodeReviewer() {
+
+        //Given
+        int initialReviewCount = nonDeveloper.getReviewCount();
+        PullRequest mockPullRequest = _github.createPullRequest("Test developer can add code reviewers", sourceBranch, targetBranch);
+
+        CodeReviewAllocation codeReviewAllocation = mockPullRequest.createCodeReview(developer, nonDeveloper);
+
+        //check that the database is initially correct and the count has actually been increased
+        int databaseReviewCount = rp.getReviewCountForUser(nonDeveloper);
+        TestCase.assertEquals(nonDeveloper.getReviewCount(), databaseReviewCount);
+        TestCase.assertEquals(initialReviewCount+1,nonDeveloper.getReviewCount());
+
+        //When
+        mockPullRequest.removeCodeReviwer(developer, nonDeveloper);
+
+        //Then
+        List<User> codeReviewers = mockPullRequest.getCodeReviewers();
+        assertFalse(codeReviewers.contains(nonDeveloper));
+        TestCase.assertEquals(initialReviewCount,nonDeveloper.getReviewCount());
+        
     }
 }
