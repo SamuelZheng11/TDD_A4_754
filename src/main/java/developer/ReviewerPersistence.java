@@ -45,6 +45,10 @@ public class ReviewerPersistence {
         return instance;
     }
 
+    public boolean isMongoDBClientNull(){
+        return this.mongoClient == null;
+    }
+
     public void updateReviewCount(User codeReviewer){
         mongoCollection.updateOne(eq(FIRST_NAME_KEY, codeReviewer.getName()), new Document(FIRST_NAME_KEY, codeReviewer.getName()).append(REVIEW_COUNT_KEY, codeReviewer.getReviewCount()).append(USERTYPE_KEY, UserType.NonDeveloper));
     }
