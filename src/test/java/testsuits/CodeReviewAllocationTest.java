@@ -115,7 +115,7 @@ public class CodeReviewAllocationTest {
         Mockito.when(mockCursor.hasNext()).thenReturn(true).thenReturn(true).thenReturn(true).thenReturn(false);
         Mockito.when(mockCursor.next()).thenReturn(mockCodeReviewerDocument);
         Mockito.when(mockCodeReviewerDocument.get(ReviewerPersistence.REVIEW_COUNT_KEY)).thenReturn(0).thenReturn(5).thenReturn(0);
-        Mockito.when(mockCodeReviewerDocument.get(ReviewerPersistence.USERTYPE_KEY)).thenReturn(UserType.NonDeveloper).thenReturn(UserType.NonDeveloper).thenReturn(UserType.Developer);
+        Mockito.when(mockCodeReviewerDocument.get(ReviewerPersistence.USERTYPE_KEY)).thenReturn(UserType.NonDeveloper.ordinal()).thenReturn(UserType.NonDeveloper.ordinal()).thenReturn(UserType.Developer.ordinal());
         Mockito.when(mockCodeReviewerDocument.get(ReviewerPersistence.FIRST_NAME_KEY)).thenReturn("1").thenReturn("2").thenReturn("3");
     }
 
