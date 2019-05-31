@@ -41,31 +41,33 @@ public class CodeReviewDatabasePersistenceTest {
     private String usersCollectionName = "users-collection";
     private GithubApi _github;
 
-    @Before
     public void setUp(){
-
         //Given
 
         mongoClient = new MongoClient("localhost", 27017);
 
         MongoDatabase mongoDatabase = this.mongoClient.getDatabase(usersDBName);
         MongoCollection<Document> mongoCollection = mongoDatabase.getCollection(usersCollectionName);
+
         Document d = new Document(FIRST_NAME_KEY, nonDeveloper.getName()).append(REVIEW_COUNT_KEY, nonDeveloper.getReviewCount()).append(USERTYPE_KEY, UserType.NonDeveloper.ordinal());
         mongoCollection.insertOne(d);
+
         rp = ReviewerPersistence.getInstance();
         rp.addDatabase(mongoClient, usersDBName, usersCollectionName);
 
         _github = new MockGithubModule();
         
     }
-
+    
     @Test
     public void shouldInitializeMongoDBClientWhenDatabaseIsAdded(){
+        setUp();
         assertFalse(rp.isMongoDBClientNull());
     }
 
     @Test
     public void shouldHaveDatabaseWithANameWhenDatabaseIsAdded() {
+        setUp();
         // When
         String dbName = rp.getDBName();
 
@@ -75,6 +77,7 @@ public class CodeReviewDatabasePersistenceTest {
 
     @Test
     public void shouldUpdateDatabaseWhenADeveloperAddsACodeReviewerForCodeReview(){
+        setUp();
         //Given
 
         PullRequest mockPullRequest = _github.createPullRequest("Test developer can add code reviewers", sourceBranch, targetBranch);
@@ -94,6 +97,7 @@ public class CodeReviewDatabasePersistenceTest {
 
     @Test
     public void shouldUpdateDatabaseWhenADeveloperAllowDeveloperToRemoveCodeReviewer() {
+        setUp();
 
         //Given
         int initialReviewCount = nonDeveloper.getReviewCount();

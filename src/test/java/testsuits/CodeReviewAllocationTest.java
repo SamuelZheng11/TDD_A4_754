@@ -8,6 +8,7 @@ import github.*;
 import junit.framework.TestCase;
 import mocks.MockGithubModule;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -101,10 +102,14 @@ public class CodeReviewAllocationTest {
         instance.set(null, null);
     }
 
-    private void mockDatabaseBehaviourWhenAddReviewCountIsCalled(User user){
+    private void mockDatabaseBehaviourWhenAddReviewCountIsCalled(User user, boolean notNull){
         Mockito.when(collection.find(new Document(ReviewerPersistence.FIRST_NAME_KEY, user.getName()))).thenReturn(mockIterable);
         Mockito.when(mockIterable.iterator()).thenReturn(mockCursor);
-        Mockito.when(mockCursor.hasNext()).thenReturn(true).thenReturn(false);
+        if(notNull) {
+            Mockito.when(mockCursor.hasNext()).thenReturn(true).thenReturn(false);
+        }else{
+            Mockito.when(mockCursor.hasNext()).thenReturn(false);
+        }
         Mockito.when(mockCursor.next()).thenReturn(mockCodeReviewerDocument);
         Mockito.when(mockCodeReviewerDocument.get(ReviewerPersistence.REVIEW_COUNT_KEY)).thenReturn(user.getReviewCount());
     }
@@ -119,6 +124,16 @@ public class CodeReviewAllocationTest {
         Mockito.when(mockCodeReviewerDocument.get(ReviewerPersistence.FIRST_NAME_KEY)).thenReturn("1").thenReturn("2").thenReturn("3");
     }
 
+    @Test
+    public void shouldCheckThatNoCodeReviewersExist() {
+        //Given
+        mockDatabaseBehaviourWhenAddReviewCountIsCalled(nonDeveloper, false);
+        //When
+        int reviewCount = spiedRPInstance.getReviewCountForUser(nonDeveloper);
+        //Then
+        Assert.assertEquals(-1, reviewCount);
+    }
+
     /**
      * 8. The developer can add/delete one or more non-developer reviewers in this
      * tool. A database is used to store the reviewers’ information.
@@ -128,7 +143,7 @@ public class CodeReviewAllocationTest {
         //Given
         PullRequest mockPullRequest = Mockito.spy(_github.createPullRequest("Test developer can add code reviewers", sourceBranch, targetBranch));
         int initialReviewCount = nonDeveloper.getReviewCount();
-        mockDatabaseBehaviourWhenAddReviewCountIsCalled(nonDeveloper);
+        mockDatabaseBehaviourWhenAddReviewCountIsCalled(nonDeveloper, true);
 
         //When
         CodeReviewAllocation codeReviewAllocation = mockPullRequest.createCodeReview(developer, nonDeveloper);
@@ -149,12 +164,12 @@ public class CodeReviewAllocationTest {
         //Given
         PullRequest mockPullRequest = Mockito.spy(_github.createPullRequest("Test developer can remove code reviewers", sourceBranch, targetBranch));
         int initialReviewCount = nonDeveloper.getReviewCount();
-        mockDatabaseBehaviourWhenAddReviewCountIsCalled(nonDeveloper);
+        mockDatabaseBehaviourWhenAddReviewCountIsCalled(nonDeveloper, true);
 
         CodeReviewAllocation codeReviewAllocation = mockPullRequest.createCodeReview(developer, nonDeveloper);
 
         //check that the database is initially correct and the count has actually been increased
-        mockDatabaseBehaviourWhenAddReviewCountIsCalled(nonDeveloper);
+        mockDatabaseBehaviourWhenAddReviewCountIsCalled(nonDeveloper, true);
         int databaseReviewCount = spiedRPInstance.getReviewCountForUser(nonDeveloper);
 
         TestCase.assertEquals(nonDeveloper.getReviewCount(), databaseReviewCount);
@@ -187,10 +202,11 @@ public class CodeReviewAllocationTest {
         PullRequest mockPullRequest = Mockito.spy(_github.createPullRequest("Test random code reviewers", sourceBranch, targetBranch));
 
         //When
-        CodeReviewAllocation codeReviewAllocation = new CodeReviewAllocation(mockPullRequest);
+        CodeReviewAllocation codeReviewAllocation = Mockito.spy(new CodeReviewAllocation(mockPullRequest));
+        Mockito.doReturn(5).when(codeReviewAllocation).generateRandomInt(6);
         User randomlyAllocatedReviewer = codeReviewAllocation.randomAllocateReviewer();
 
-        mockDatabaseBehaviourWhenAddReviewCountIsCalled(randomlyAllocatedReviewer);
+        mockDatabaseBehaviourWhenAddReviewCountIsCalled(randomlyAllocatedReviewer, true);
 
         //check that the database is initially correct
         int databaseReviewCount = spiedRPInstance.getReviewCountForUser(randomlyAllocatedReviewer);
@@ -252,7 +268,7 @@ public class CodeReviewAllocationTest {
         //getting all review counts of all users
         for(User u : allUsers){
             userReviewCountMap.put(u, u.getReviewCount());
-            mockDatabaseBehaviourWhenAddReviewCountIsCalled(u);
+            mockDatabaseBehaviourWhenAddReviewCountIsCalled(u, true);
         }
 
         List<User> allCodeReviewers = spiedRPInstance.getAllCodeReviewers();
@@ -284,7 +300,7 @@ public class CodeReviewAllocationTest {
         //getting all review counts of all users
         for(User u : allUsers){
             userReviewCountMap.put(u, u.getReviewCount());
-            mockDatabaseBehaviourWhenAddReviewCountIsCalled(u);
+            mockDatabaseBehaviourWhenAddReviewCountIsCalled(u, true);
         }
 
         List<User> allCodeReviewers = spiedRPInstance.getAllCodeReviewers();
