@@ -45,15 +45,23 @@ public class ReviewerPersistence {
         return instance;
     }
 
+    public boolean isMongoDBClientNull(){
+        return this.mongoClient == null;
+    }
+
+    public String getDBName() {
+        return this.mongoDatabase.getName();
+    }
+
     public void updateReviewCount(User codeReviewer){
-        mongoCollection.updateOne(eq(FIRST_NAME_KEY, codeReviewer.getName()), new Document(FIRST_NAME_KEY, codeReviewer.getName()).append(REVIEW_COUNT_KEY, codeReviewer.getReviewCount()).append(USERTYPE_KEY, UserType.NonDeveloper));
+        mongoCollection.replaceOne(eq(FIRST_NAME_KEY, codeReviewer.getName()), new Document(FIRST_NAME_KEY, codeReviewer.getName()).append(REVIEW_COUNT_KEY, codeReviewer.getReviewCount()).append(USERTYPE_KEY, UserType.NonDeveloper.ordinal()));
     }
 
     public int getReviewCountForUser(User codeReviewer){
         FindIterable<Document> documents = mongoCollection.find(new Document(FIRST_NAME_KEY, codeReviewer.getName()));
         MongoCursor<Document> iterator = documents.iterator();
         int reviewCount = -1;
-        while (iterator.hasNext()) {
+        if (iterator.hasNext()) {
             Document document = iterator.next();
             reviewCount = (Integer)document.get(REVIEW_COUNT_KEY);
         }
@@ -69,10 +77,10 @@ public class ReviewerPersistence {
 
                 String userName = (String) document.get(FIRST_NAME_KEY);
                 int reviewCount = (Integer) document.get(REVIEW_COUNT_KEY);
-                UserType ut = (UserType) document.get(USERTYPE_KEY);
+                int ut = (Integer) document.get(USERTYPE_KEY);
 
-                if (ut == UserType.NonDeveloper) {
-                    User user = new User(userName, ut, reviewCount);
+                if (ut == UserType.NonDeveloper.ordinal()) {
+                    User user = new User(userName, UserType.NonDeveloper, reviewCount);
                     reviewers.add(user);
                 }
             }

@@ -26,8 +26,12 @@ public class CodeReviewAllocation {
         return codeReviewer;
     }
 
-    public User randomAllocateReviewer() {
+    public int generateRandomInt(int chance){
         Random rand = new Random();
+        return rand.nextInt(chance);
+    }
+
+    public User randomAllocateReviewer() {
         List<User> allCodeReviewers = ReviewerPersistence.getInstance().getAllCodeReviewers();
         Map<User, Integer> reviewChanceMap = new LinkedHashMap<User, Integer>();
         int chance = 0;
@@ -45,7 +49,7 @@ public class CodeReviewAllocation {
             reviewChanceMap.put(cr, chance);
         }
 
-        int randomValue = rand.nextInt(chance);
+        int randomValue = generateRandomInt(chance);
 
         Set<User> reviewChanceKeySet = reviewChanceMap.keySet();
         for (User cr: reviewChanceKeySet){
