@@ -1,28 +1,55 @@
 package acceptance;
 
+import developer.CodeReviewAllocation;
+import github.*;
+import mocks.MockGithubModule;
+import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
+import org.mockito.Mockito;
 
-import static org.junit.Assert.assertEquals;
+import java.util.List;
+
+import static org.junit.Assert.assertTrue;
 
 public class DefaultSteps {
+
+	private String sourceBranchName = "GithubPullRequestFetchTest_Branch";
+	private String targetBranchName = "GithubPullRequestFetchTest_TargetBranch";
+
+	private User developer = new User("", UserType.Developer);
+	private User nonDeveloper = new User("codeReviewer", UserType.NonDeveloper);
+
+	private GitCommit commit = new GitCommit("Commit Message", "GithubPullRequestFetchTest_Commit");
+	private GitCommit[] committed_code = {commit};
+	private GitBranch sourceBranch = new GitBranch(sourceBranchName, committed_code);
+	private GitBranch targetBranch = new GitBranch(targetBranchName, committed_code);
+
+	private GithubApi _github;
+	private PullRequest mockPullRequest;
+
+	@BeforeScenario
+	public void initialise(){
+		_github = new MockGithubModule();
+	}
 	
-	int five;
-	int ten;
-	
-	@Given("User has $amount dollars")
-	public void givenUserHas5Dollars(int amount) {
-		five = 5;
+	@Given("a pull request")
+	public void givenAPullRequest() {
+		mockPullRequest = Mockito.spy(_github.createPullRequest("Test developer can add code reviewers", sourceBranch, targetBranch));
+		int initialReviewCount = nonDeveloper.getReviewCount();
 	}
 
-	@When("User multiply it by $multiplier")
-	public void whenUserMultiplyItBy2(int multiplier) throws InterruptedException {
-		ten = five * multiplier;
+	@When("a non-developer is added")
+	public void whenANonDevIsAdded(){
+		CodeReviewAllocation codeReviewAllocation = mockPullRequest.createCodeReview(developer, nonDeveloper);
+		mockDatabaseBehaviourWhenAddReviewCountIsCalled(nonDeveloper);
+
 	}
 
-	@Then("The resultant amount is $result")
-	public void thenTheResultantAmountIs10(int result) {
-		assertEquals(10, ten);
+	@Then("the user is added to the database")
+	public void thenTheUserIsAddedToTheDatabase() {
+		List<User> codeReviewers = mockPullRequest.getCodeReviewers();
+		assertTrue(codeReviewers.contains(nonDeveloper));
 	}
 }

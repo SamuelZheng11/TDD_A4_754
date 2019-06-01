@@ -1,10 +1,9 @@
 Narrative:
-In order to obtain the total amount of my cash
-As an application user
-I want to perform basic math operations on my currencies
+In order to control the number of non-developer users
+as an application user
+I want to add and delete non-developer users
 
-Scenario: senario times
-Given User has 5 dollars
-When User multiply it by 2
-Then The resultant amount is 10
-
+Scenario: Scenario Add
+Given a pull request
+When a non-developer is added
+Then the user is added to the database
