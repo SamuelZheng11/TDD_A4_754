@@ -16,9 +16,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class DefaultStoryRunner extends JUnitStories {
+public class DatabaseStoryRunner extends JUnitStories {
 
-    public DefaultStoryRunner() {
+    public DatabaseStoryRunner() {
         configuredEmbedder()
                 .embedderControls()
                 .doGenerateViewAfterStories(true)
@@ -41,7 +41,7 @@ public class DefaultStoryRunner extends JUnitStories {
 
     @Override
     public InjectableStepsFactory stepsFactory() {
-        return new InstanceStepsFactory(configuration(), new DefaultSteps());
+        return new InstanceStepsFactory(configuration(), new DatabaseSteps());
     }
 
     @Override

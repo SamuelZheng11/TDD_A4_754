@@ -5,7 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses({ DefaultStoryRunner.class})
-public class DefaultStoryRunnerSuite {
+@SuiteClasses({ DatabaseStoryRunner.class})
+public class DatabaseStoryRunnerSuite {
 
 }

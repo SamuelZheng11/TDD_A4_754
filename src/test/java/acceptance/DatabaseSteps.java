@@ -6,25 +6,20 @@ import com.mongodb.client.MongoDatabase;
 import developer.CodeReviewAllocation;
 import developer.ReviewerPersistence;
 import github.*;
-import junit.framework.TestCase;
 import mocks.MockGithubModule;
 import org.bson.Document;
 import org.jbehave.core.annotations.BeforeScenario;
 import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
-import org.mockito.Mockito;
 
 import java.util.List;
 
-import static developer.ReviewerPersistence.FIRST_NAME_KEY;
-import static developer.ReviewerPersistence.REVIEW_COUNT_KEY;
-import static developer.ReviewerPersistence.USERTYPE_KEY;
+import static developer.ReviewerPersistence.*;
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.times;
 
-public class DefaultSteps {
+public class DatabaseSteps {
 
 	private String sourceBranchName = "GithubPullRequestFetchTest_Branch";
 	private String targetBranchName = "GithubPullRequestFetchTest_TargetBranch";
@@ -70,9 +65,11 @@ public class DefaultSteps {
 		initialReviewCount = nonDeveloper.getReviewCount();
 	}
 
-	@When("a non-developer is added")
-	public void whenANonDevIsAdded(){
-		CodeReviewAllocation codeReviewAllocation = mockPullRequest.createCodeReview(developer, nonDeveloper);
+	@When("a non-developer creates $number code reviews")
+	public void whenANonDevIsAdded(int number){
+		for (int i = 0; i < number; i++) {
+			CodeReviewAllocation codeReviewAllocation = mockPullRequest.createCodeReview(developer, nonDeveloper);
+		}
 	}
 
 	@Then("the user is added to the database")
