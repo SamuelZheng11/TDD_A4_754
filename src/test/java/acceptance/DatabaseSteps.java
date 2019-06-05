@@ -39,7 +39,6 @@ public class DatabaseSteps {
 	private String usersCollectionName = "users-collection";
 	private GithubApi _github;
 
-	private int initialReviewCount;
 	private PullRequest mockPullRequest;
 
 
@@ -62,7 +61,6 @@ public class DatabaseSteps {
 	@Given("a pull request")
 	public void givenAPullRequest() {
 		mockPullRequest = _github.createPullRequest("Test developer can add code reviewers", sourceBranch, targetBranch);
-		initialReviewCount = nonDeveloper.getReviewCount();
 	}
 
 	@When("a non-developer creates $number code reviews")
@@ -76,8 +74,6 @@ public class DatabaseSteps {
 	public void thenTheUserIsAddedToTheDatabase() {
 		List<User> codeReviewers = mockPullRequest.getCodeReviewers();
 		assertTrue(codeReviewers.contains(nonDeveloper));
-
-		assertEquals(initialReviewCount+1,nonDeveloper.getReviewCount());
 
 		System.out.println("User Code Review Count save action perfomed!!!");
 	}
